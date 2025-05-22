@@ -1,0 +1,125 @@
+<!-- src/app/components/tuteur-sidebar/tuteur-sidebar.component.html -->
+
+<div class="tuteur-sidebar-container">
+  <!-- Header Section -->
+  <div class="tuteur-sidebar-header">
+    <div class="tuteur-logo-section">
+      <i class="pi pi-graduation-cap tuteur-logo-icon"></i>
+      <span class="tuteur-logo-text">TutorHub Pro</span>
+    </div>
+  </div>
+
+  <!-- Profile Section -->
+  <div class="tuteur-profile-section" *ngIf="!loading && tuteur">
+    <div class="tuteur-profile-card" (click)="navigateToProfile()">
+      <div class="tuteur-profile-avatar">
+        <img 
+          *ngIf="tuteur.profilePicture" 
+          [src]="tuteur.profilePicture" 
+          [alt]="tuteur.firstName + ' ' + tuteur.lastName"
+          class="tuteur-avatar-image"
+        />
+        <div 
+          *ngIf="!tuteur.profilePicture" 
+          class="tuteur-avatar-initials"
+        >
+          {{ getInitials(tuteur) }}
+        </div>
+        <div class="tuteur-online-indicator" [class.verified]="tuteur.isVerified"></div>
+      </div>
+      
+      <div class="tuteur-profile-info">
+        <h4 class="tuteur-profile-name">{{ tuteur.firstName }} {{ tuteur.lastName }}</h4>
+        <p class="tuteur-profile-username">@{{ tuteur.username }}</p>
+        
+        <div class="tuteur-profile-stats">
+          <div class="tuteur-stat-item">
+            <div class="tuteur-rating-container">
+              <span class="tuteur-rating-score">{{ tuteur.ratingMoyen }}</span>
+              <div class="tuteur-stars">
+                <i 
+                  *ngFor="let star of getRatingStars(tuteur.ratingMoyen)" 
+                  [class]="'pi ' + star"
+                  class="tuteur-star-icon"
+                ></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tuteur-stat-item">
+            <span class="tuteur-stat-value">{{ tuteur.totalCours }}</span>
+            <span class="tuteur-stat-label">Cours</span>
+          </div>
+          
+          <div class="tuteur-stat-item">
+            <span class="tuteur-stat-value">{{ tuteur.anneesExperience }}ans</span>
+            <span class="tuteur-stat-label">Exp.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Profile Section -->
+  <div class="tuteur-profile-section" *ngIf="loading">
+    <div class="tuteur-profile-card loading">
+      <p-skeleton shape="circle" size="3rem" class="tuteur-avatar-skeleton"></p-skeleton>
+      <div class="tuteur-profile-info">
+        <p-skeleton width="8rem" height="1rem" class="mb-2"></p-skeleton>
+        <p-skeleton width="6rem" height="0.8rem" class="mb-3"></p-skeleton>
+        <div class="tuteur-profile-stats">
+          <p-skeleton width="3rem" height="0.7rem"></p-skeleton>
+          <p-skeleton width="3rem" height="0.7rem"></p-skeleton>
+          <p-skeleton width="3rem" height="0.7rem"></p-skeleton>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <div class="tuteur-navigation-section">
+    <p-panelMenu 
+      [model]="menuItems" 
+      styleClass="tuteur-custom-panel-menu"
+    ></p-panelMenu>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="tuteur-quick-actions">
+    <h5 class="tuteur-section-title">Actions Rapides</h5>
+    
+    <div class="tuteur-action-buttons">
+      <p-button 
+        label="Nouvelle Offre" 
+        icon="pi pi-plus" 
+        styleClass="p-button-success p-button-sm w-full mb-2"
+        routerLink="/tuteur/offers/new"
+      ></p-button>
+      
+      <p-button 
+        label="Voir Agenda" 
+        icon="pi pi-calendar" 
+        styleClass="p-button-outlined p-button-sm w-full"
+        routerLink="/tuteur/calendar"
+      ></p-button>
+    </div>
+  </div>
+
+  <!-- Status Indicator -->
+  <div class="tuteur-status-section">
+    <div class="tuteur-status-card" [class.available]="tuteur?.isAvailable">
+      <div class="tuteur-status-indicator">
+        <i 
+          class="pi" 
+          [class.pi-circle-fill]="tuteur?.isAvailable"
+          [class.pi-circle]="!tuteur?.isAvailable"
+          [class.available]="tuteur?.isAvailable"
+          [class.unavailable]="!tuteur?.isAvailable"
+        ></i>
+        <span class="tuteur-status-text">
+          {{ tuteur?.isAvailable ? 'Disponible' : 'Indisponible' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

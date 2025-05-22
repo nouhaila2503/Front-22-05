@@ -1,0 +1,509 @@
+<!-- src/app/course-offer-form/course-offer-form.component.html -->
+
+<p-toast></p-toast>
+
+<div class="course-offer-form-container">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="form-header">
+        <h2>{{ isEditMode ? 'Modifier l\'offre de cours' : 'Créer une nouvelle offre de cours' }}</h2>
+        
+        <!-- Progress Steps -->
+        <div class="steps-container">
+          <div class="steps-wrapper">
+            <div 
+              *ngFor="let title of stepTitles; let i = index" 
+              class="step"
+              [ngClass]="getStepClass(i)"
+              (click)="goToStep(i)">
+              <div class="step-circle">
+                <i class="pi" [ngClass]="getStepIcon(i)"></i>
+                <span class="step-number">{{ i + 1 }}</span>
+              </div>
+              <span class="step-title">{{ title }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="loading-container">
+        <p-progressSpinner></p-progressSpinner>
+        <p>Chargement...</p>
+      </div>
+
+      <!-- Form Content -->
+      <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+        
+        <!-- Step 1: General Information -->
+        <div *ngIf="currentStep === 0" class="form-step">
+          <h3>Informations générales</h3>
+          
+          <div class="form-grid">
+            <!-- Title -->
+            <div class="form-field">
+              <label for="title">Titre du cours *</label>
+              <input 
+                pInputText 
+                id="title" 
+                formControlName="title"
+                placeholder="Ex: Cours d'Algèbre Linéaire - Niveau Licence"
+                [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('title')}"
+              />
+              <small class="error-message" *ngIf="isFieldInvalid('title')">
+                {{ getFieldError('title') }}
+              </small>
+            </div>
+
+            <!-- Domain -->
+            <div class="form-field">
+              <label for="domaine">Domaine *</label>
+              <p-dropdown
+                id="domaine"
+                formControlName="domaineId"
+                [options]="domaines"
+                optionLabel="nom"
+                optionValue="id"
+                placeholder="Sélectionnez un domaine"
+                [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('domaineId')}"
+              ></p-dropdown>
+              <small class="error-message" *ngIf="isFieldInvalid('domaineId')">
+                {{ getFieldError('domaineId') }}
+              </small>
+            </div>
+
+            <!-- Module -->
+            <div class="form-field">
+              <label for="module">Module *</label>
+              <p-dropdown
+                id="module"
+                formControlName="moduleId"
+                [options]="modules"
+                optionLabel="nom"
+                optionValue="id"
+                placeholder="Sélectionnez un module"
+                [disabled]="!offerForm.get('domaineId')?.value"
+                [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('moduleId')}"
+              ></p-dropdown>
+              <small class="error-message" *ngIf="isFieldInvalid('moduleId')">
+                {{ getFieldError('moduleId') }}
+              </small>
+            </div>
+
+            <!-- Level -->
+            <div class="form-field">
+              <label for="niveau">Niveau *</label>
+              <p-dropdown
+                id="niveau"
+                formControlName="niveau"
+                [options]="niveauOptions"
+                placeholder="Sélectionnez un niveau"
+                [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('niveau')}"
+              ></p-dropdown>
+              <small class="error-message" *ngIf="isFieldInvalid('niveau')">
+                {{ getFieldError('niveau') }}
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Course Details -->
+        <div *ngIf="currentStep === 1" class="form-step">
+          <h3>Détails du cours</h3>
+          
+          <div class="form-grid">
+            <!-- Description -->
+            <div class="form-field full-width">
+              <label for="description">Description *</label>
+              <textarea 
+                pInputTextarea 
+                id="description" 
+                formControlName="description"
+                placeholder="Décrivez votre cours, les objectifs et le contenu..."
+                rows="4"
+                [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('description')}"
+              ></textarea>
+              <small class="error-message" *ngIf="isFieldInvalid('description')">
+                {{ getFieldError('description') }}
+              </small>
+            </div>
+
+            <!-- Price per hour -->
+            <div class="form-field">
+              <label for="prix">Prix par heure (€) *</label>
+              <p-inputNumber
+                id="prix"
+                formControlName="prixParHeure"
+                mode="currency"
+                currency="EUR"
+                locale="fr-FR"
+                [min]="10"
+                [max]="200"
+                [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('prixParHeure')}"
+              ></p-inputNumber>
+              <small class="error-message" *ngIf="isFieldInvalid('prixParHeure')">
+                {{ getFieldError('prixParHeure') }}
+              </small>
+            </div>
+
+            <!-- Max students -->
+            <div class="form-field">
+              <label for="maxStudents">Nombre max d'étudiants *</label>
+              <p-inputNumber
+                id="maxStudents"
+                formControlName="maxStudents"
+                [min]="1"
+                [max]="10"
+                [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('maxStudents')}"
+              ></p-inputNumber>
+              <small class="error-message" *ngIf="isFieldInvalid('maxStudents')">
+                {{ getFieldError('maxStudents') }}
+              </small>
+            </div>
+
+            <!-- Requirements -->
+            <div class="form-field full-width">
+              <label>Prérequis</label>
+              <div class="array-field">
+                <div *ngFor="let requirement of requirementsArray.controls; let i = index" class="array-item">
+                  <input 
+                    pInputText 
+                    [formControl]="getRequirementControl(i)"
+                    placeholder="Ex: Calculatrice scientifique"
+                  />
+                  <button 
+                    type="button" 
+                    pButton 
+                    icon="pi pi-trash" 
+                    class="p-button-danger p-button-sm"
+                    (click)="removeRequirement(i)"
+                  ></button>
+                </div>
+                <button 
+                  type="button" 
+                  pButton 
+                  label="Ajouter un prérequis" 
+                  icon="pi pi-plus"
+                  class="p-button-outlined"
+                  (click)="addRequirement()"
+                ></button>
+              </div>
+            </div>
+
+            <!-- Materials -->
+            <div class="form-field full-width">
+              <label>Matériel nécessaire</label>
+              <div class="array-field">
+                <div *ngFor="let material of materialsArray.controls; let i = index" class="array-item">
+                  <input 
+                    pInputText 
+                    [formControl]="getMaterialControl(i)"
+                    placeholder="Ex: Manuel d'algèbre linéaire"
+                  />
+                  <button 
+                    type="button" 
+                    pButton 
+                    icon="pi pi-trash" 
+                    class="p-button-danger p-button-sm"
+                    (click)="removeMaterial(i)"
+                  ></button>
+                </div>
+                <button 
+                  type="button" 
+                  pButton 
+                  label="Ajouter du matériel" 
+                  icon="pi pi-plus"
+                  class="p-button-outlined"
+                  (click)="addMaterial()"
+                ></button>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="form-field full-width">
+              <label for="tags">Tags (séparés par des virgules)</label>
+              <input 
+                pInputText 
+                id="tags" 
+                formControlName="tags"
+                placeholder="Ex: licence, mathématiques, algèbre"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Time Slots -->
+        <div *ngIf="currentStep === 2" class="form-step">
+          <h3>Créneaux horaires</h3>
+          
+          <div class="form-grid">
+            <!-- Available from date -->
+            <div class="form-field">
+              <label for="dateDisponibilite">Disponible à partir du *</label>
+              <p-calendar
+                id="dateDisponibilite"
+                formControlName="dateDisponibilite"
+                [minDate]="minDate"
+                dateFormat="dd/mm/yy"
+                [showIcon]="true"
+                [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('dateDisponibilite')}"
+              ></p-calendar>
+              <small class="error-message" *ngIf="isFieldInvalid('dateDisponibilite')">
+                {{ getFieldError('dateDisponibilite') }}
+              </small>
+            </div>
+
+            <!-- Time slots -->
+            <div class="form-field full-width">
+              <label>Créneaux horaires *</label>
+              <div class="time-slots-container">
+                <div *ngFor="let creneau of creneauxArray.controls; let i = index" class="time-slot-item">
+                  <div [formGroup]="getCreneauControl(i)" class="time-slot-form">
+                    <div class="time-inputs">
+                      <div class="form-field">
+                        <label>Heure de début *</label>
+                        <input 
+                          pInputText 
+                          formControlName="startTime"
+                          type="time"
+                          placeholder="09:00"
+                        />
+                      </div>
+                      <div class="form-field">
+                        <label>Heure de fin *</label>
+                        <input 
+                          pInputText 
+                          formControlName="endTime"
+                          type="time"
+                          placeholder="11:00"
+                        />
+                      </div>
+                      <div class="form-field">
+                        <label>Capacité max *</label>
+                        <p-inputNumber
+                          formControlName="maxCapacity"
+                          [min]="1"
+                          [max]="10"
+                        ></p-inputNumber>
+                      </div>
+                    </div>
+
+                    <div class="recurring-options">
+                      <p-checkbox 
+                        formControlName="isRecurring" 
+                        label="Créneaux récurrents"
+                      ></p-checkbox>
+                      
+                      <div *ngIf="getCreneauControl(i).get('isRecurring')?.value" formGroupName="recurringPattern" class="recurring-details">
+                        <div class="form-field">
+                          <label>Type de récurrence</label>
+                          <p-dropdown
+                            formControlName="type"
+                            [options]="recurringTypes"
+                          ></p-dropdown>
+                        </div>
+                        <div class="form-field">
+                          <label>Intervalle</label>
+                          <p-inputNumber
+                            formControlName="interval"
+                            [min]="1"
+                            [max]="12"
+                          ></p-inputNumber>
+                        </div>
+                        <div class="form-field">
+                          <label>Date de fin</label>
+                          <p-calendar
+                            formControlName="endDate"
+                            dateFormat="dd/mm/yy"
+                            [showIcon]="true"
+                          ></p-calendar>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button 
+                      type="button" 
+                      pButton 
+                      icon="pi pi-trash" 
+                      class="p-button-danger p-button-sm remove-slot-btn"
+                      (click)="removeTimeSlot(i)"
+                      *ngIf="creneauxArray.length > 1"
+                    ></button>
+                  </div>
+                </div>
+                
+                <button 
+                  type="button" 
+                  pButton 
+                  label="Ajouter un créneau" 
+                  icon="pi pi-plus"
+                  class="p-button-outlined"
+                  (click)="addTimeSlot()"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Location & Final Details -->
+        <div *ngIf="currentStep === 3" class="form-step">
+          <h3>Localisation et finalisation</h3>
+          
+          <div formGroupName="location" class="form-grid">
+            <!-- Location type -->
+            <div class="form-field">
+              <label for="locationType">Type de cours *</label>
+              <p-dropdown
+                id="locationType"
+                formControlName="type"
+                [options]="locationTypes"
+                placeholder="Sélectionnez le type"
+                [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('location.type')}"
+              ></p-dropdown>
+              <small class="error-message" *ngIf="isFieldInvalid('location.type')">
+                {{ getFieldError('location.type') }}
+              </small>
+            </div>
+
+            <!-- Online options -->
+            <ng-container *ngIf="offerForm.get('location.type')?.value === 'online' || offerForm.get('location.type')?.value === 'hybrid'">
+              <div class="form-field">
+                <label for="platform">Plateforme *</label>
+                <p-dropdown
+                  id="platform"
+                  formControlName="platform"
+                  [options]="platformOptions"
+                  placeholder="Sélectionnez une plateforme"
+                  [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('location.platform')}"
+                ></p-dropdown>
+                <small class="error-message" *ngIf="isFieldInvalid('location.platform')">
+                  {{ getFieldError('location.platform') }}
+                </small>
+              </div>
+
+              <div class="form-field">
+                <label for="meetingUrl">Lien de réunion *</label>
+                <input 
+                  pInputText 
+                  id="meetingUrl" 
+                  formControlName="meetingUrl"
+                  placeholder="https://zoom.us/j/123456789"
+                  [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('location.meetingUrl')}"
+                />
+                <small class="error-message" *ngIf="isFieldInvalid('location.meetingUrl')">
+                  {{ getFieldError('location.meetingUrl') }}
+                </small>
+              </div>
+            </ng-container>
+
+            <!-- In-person options -->
+            <ng-container *ngIf="offerForm.get('location.type')?.value === 'in-person' || offerForm.get('location.type')?.value === 'hybrid'">
+              <div class="form-field">
+                <label for="address">Adresse *</label>
+                <input 
+                  pInputText 
+                  id="address" 
+                  formControlName="address"
+                  placeholder="Ex: Bibliothèque universitaire"
+                  [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('location.address')}"
+                />
+                <small class="error-message" *ngIf="isFieldInvalid('location.address')">
+                  {{ getFieldError('location.address') }}
+                </small>
+              </div>
+
+              <div class="form-field">
+                <label for="city">Ville *</label>
+                <input 
+                  pInputText 
+                  id="city" 
+                  formControlName="city"
+                  placeholder="Ex: Paris"
+                  [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('location.city')}"
+                />
+                <small class="error-message" *ngIf="isFieldInvalid('location.city')">
+                  {{ getFieldError('location.city') }}
+                </small>
+              </div>
+            </ng-container>
+          </div>
+
+          <!-- Summary -->
+          <div class="form-summary">
+            <h4>Résumé de votre offre</h4>
+            <div class="summary-content">
+              <p><strong>Titre:</strong> {{ offerForm.get('title')?.value || 'Non défini' }}</p>
+              <p><strong>Prix par heure:</strong> {{ offerForm.get('prixParHeure')?.value || 0 }}€</p>
+              <p><strong>Étudiants max:</strong> {{ offerForm.get('maxStudents')?.value || 0 }}</p>
+              <p><strong>Type:</strong> {{ offerForm.get('location.type')?.value || 'Non défini' }}</p>
+              <p><strong>Créneaux:</strong> {{ creneauxArray.length }} créneau(x) défini(s)</p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <div class="form-actions">
+        <!-- Previous button -->
+        <button 
+          type="button" 
+          pButton 
+          label="Précédent" 
+          icon="pi pi-chevron-left"
+          class="p-button-outlined"
+          (click)="previousStep()"
+          [disabled]="currentStep === 0"
+          *ngIf="currentStep > 0"
+        ></button>
+
+        <!-- Cancel button -->
+        <button 
+          type="button" 
+          pButton 
+          label="Annuler" 
+          class="p-button-outlined p-button-secondary"
+          (click)="onCancel()"
+        ></button>
+
+        <!-- Reset button -->
+        <button 
+          type="button" 
+          pButton 
+          label="Réinitialiser" 
+          icon="pi pi-refresh"
+          class="p-button-outlined p-button-warning"
+          (click)="resetForm()"
+          *ngIf="!isEditMode"
+        ></button>
+
+        <!-- Next button -->
+        <button 
+          type="button" 
+          pButton 
+          label="Suivant" 
+          icon="pi pi-chevron-right"
+          iconPos="right"
+          (click)="nextStep()"
+          [disabled]="!isStepValid(currentStep)"
+          *ngIf="currentStep < totalSteps - 1"
+        ></button>
+
+        <!-- Submit button -->
+        <button 
+          type="submit" 
+          pButton 
+          [label]="isEditMode ? 'Modifier l\'offre' : 'Créer l\'offre'" 
+          icon="pi pi-check"
+          class="p-button-success"
+          [disabled]="!offerForm.valid || saving"
+          [loading]="saving"
+          (click)="onSubmit()"
+          *ngIf="currentStep === totalSteps - 1"
+        ></button>
+      </div>
+    </ng-template>
+  </p-card>
+</div>

@@ -1,0 +1,434 @@
+<!-- src/app/components/ratings/ratings.component.html -->
+
+<div class="ratings-container">
+  
+  <!-- Header Section -->
+  <div class="ratings-header mb-4">
+    <div class="flex justify-content-between align-items-center flex-wrap">
+      <div>
+        <h1 class="text-3xl font-bold text-900 mb-2">Mes Évaluations</h1>
+        <p class="text-600 text-lg">Consultez les avis de vos étudiants</p>
+      </div>
+      
+      <p-button 
+        label="Exporter" 
+        icon="pi pi-download" 
+        (onClick)="exportRatings()"
+        styleClass="p-button-outlined"
+      ></p-button>
+    </div>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="grid mb-4">
+    
+    <!-- Overall Rating Card -->
+    <div class="col-12 lg:col-4">
+      <p-card styleClass="rating-summary-card">
+        <div class="text-center">
+          <div class="overall-rating">
+            <span class="rating-score">{{ ratingStats.averageScore || 0 }}</span>
+            <div class="rating-stars mb-2">
+              <i 
+                *ngFor="let star of getStarArray(ratingStats.averageScore || 0)" 
+                [class]="star ? 'pi pi-star-fill star-filled' : 'pi pi-star star-empty'"
+              ></i>
+            </div>
+            <p class="text-600">Sur {{ ratingStats.totalRatings || 0 }} avis</p>
+          </div>
+          
+          <div class="recommendation-rate mt-3">
+            <h4 class="text-900 mb-1">{{ ratingStats.recommendationRate || 0 }}%</h4>
+            <p class="text-600 text-sm">de recommandations</p>
+          </div>
+        </div>
+      </p-card>
+    </div>
+    
+    <!-- Rating Distribution Chart -->
+    <div class="col-12 lg:col-4">
+      <p-card header="Répartition des Notes" styleClass="chart-card">
+        <p-chart 
+          *ngIf="getRatingDistribution()"
+          type="doughnut" 
+          [data]="getRatingDistribution()" 
+          [options]="getChartOptions()"
+          height="200px"
+        ></p-chart>
+        <div *ngIf="!getRatingDistribution()" class="text-center py-4">
+          <p class="text-600">Aucune donnée disponible</p>
+        </div>
+      </p-card>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="col-12 lg:col-4">
+      <div class="grid">
+        <div class="col-6">
+          <p-card styleClass="quick-stat-card verified-card">
+            <div class="text-center">
+              <i class="pi pi-verified stat-icon"></i>
+              <h3 class="text-white font-bold">{{ ratingStats.verifiedRatings || 0 }}</h3>
+              <p class="text-white opacity-90">Vérifiées</p>
+            </div>
+          </p-card>
+        </div>
+        
+        <div class="col-6">
+          <p-card styleClass="quick-stat-card helpful-card">
+            <div class="text-center">
+              <i class="pi pi-thumbs-up stat-icon"></i>
+              <h3 class="text-white font-bold">{{ ratingStats.totalHelpfulVotes || 0 }}</h3>
+              <p class="text-white opacity-90">Votes utiles</p>
+            </div>
+          </p-card>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <p-card styleClass="filters-card mb-4">
+    <div class="grid align-items-end">
+      <div class="col-12 md:col-3">
+        <label class="block text-900 font-medium mb-2">Recherche</label>
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-search"></i>
+          <input 
+            type="text" 
+            pInputText 
+            placeholder="Rechercher..."
+            [(ngModel)]="searchValue"
+            (input)="onSearchInput($event)"
+            class="w-full"
+          />
+        </span>
+      </div>
+      
+      <div class="col-12 md:col-2">
+        <label class="block text-900 font-medium mb-2">Note</label>
+        <p-dropdown 
+          [options]="scoreOptions" 
+          [(ngModel)]="selectedScore"
+          (onChange)="onFilterChange()"
+          placeholder="Toutes"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+        ></p-dropdown>
+      </div>
+      
+      <div class="col-12 md:col-2">
+        <label class="block text-900 font-medium mb-2">Statut</label>
+        <p-dropdown 
+          [options]="verificationOptions" 
+          [(ngModel)]="selectedVerified"
+          (onChange)="onFilterChange()"
+          placeholder="Toutes"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+        ></p-dropdown>
+      </div>
+      
+      <div class="col-12 md:col-2">
+        <label class="block text-900 font-medium mb-2">Du</label>
+        <p-calendar 
+          [(ngModel)]="dateFrom"
+          (onSelect)="onFilterChange()"
+          placeholder="Date début"
+          dateFormat="dd/mm/yy"
+          styleClass="w-full"
+          [showIcon]="true"
+        ></p-calendar>
+      </div>
+      
+      <div class="col-12 md:col-2">
+        <label class="block text-900 font-medium mb-2">Au</label>
+        <p-calendar 
+          [(ngModel)]="dateTo"
+          (onSelect)="onFilterChange()"
+          placeholder="Date fin"
+          dateFormat="dd/mm/yy"
+          styleClass="w-full"
+          [showIcon]="true"
+        ></p-calendar>
+      </div>
+      
+      <div class="col-12 md:col-1">
+        <p-button 
+          icon="pi pi-filter-slash" 
+          (onClick)="clearFilters()"
+          styleClass="p-button-text w-full"
+          pTooltip="Effacer les filtres"
+        ></p-button>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Ratings List -->
+  <div class="ratings-list" *ngIf="!loading; else loadingTemplate">
+    
+    <!-- No Results -->
+    <div *ngIf="filteredRatings.length === 0" class="empty-state">
+      <p-card>
+        <div class="text-center py-5">
+          <i class="pi pi-star empty-icon"></i>
+          <h4>Aucune évaluation trouvée</h4>
+          <p class="text-600">Aucune évaluation ne correspond à vos critères de recherche.</p>
+          <p-button 
+            label="Effacer les filtres" 
+            (onClick)="clearFilters()"
+            styleClass="p-button-text"
+          ></p-button>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Rating Cards -->
+    <div 
+      *ngFor="let rating of filteredRatings" 
+      class="rating-card mb-4"
+      [class.high-rating]="rating.score >= 4"
+      [class.low-rating]="rating.score <= 2"
+    >
+      <p-card>
+        <div class="rating-content">
+          
+          <!-- Header -->
+          <div class="rating-header mb-3">
+            <div class="flex justify-content-between align-items-start">
+              
+              <div class="flex align-items-center">
+                <img 
+                  [src]="rating.studentAvatar" 
+                  [alt]="rating.studentName"
+                  class="student-avatar mr-3"
+                />
+                <div>
+                  <h5 class="mb-1 font-semibold">{{ rating.studentName }}</h5>
+                  <p class="text-sm text-600 mb-1">{{ rating.courseTitle }}</p>
+                  <small class="text-500">{{ formatDate(rating.createdAt) }}</small>
+                </div>
+              </div>
+              
+              <div class="rating-meta text-right">
+                <div class="rating-score-display mb-2">
+                  <span 
+                    class="score-badge"
+                    [style.background-color]="getScoreColor(rating.score)"
+                  >
+                    {{ rating.score }}/5
+                  </span>
+                </div>
+                
+                <div class="rating-stars mb-1">
+                  <i 
+                    *ngFor="let star of getStarArray(rating.score)" 
+                    [class]="star ? 'pi pi-star-fill star-filled' : 'pi pi-star star-empty'"
+                  ></i>
+                </div>
+                
+                <div class="rating-badges">
+                  <p-tag 
+                    *ngIf="rating.isVerified"
+                    value="Vérifiée" 
+                    severity="success"
+                    icon="pi pi-verified"
+                    styleClass="mr-1 mb-1"
+                  ></p-tag>
+                  
+                  <p-tag 
+                    [value]="getRecommendationText(rating.wouldRecommend)" 
+                    [severity]="getRecommendationSeverity(rating.wouldRecommend)"
+                    [icon]="rating.wouldRecommend ? 'pi pi-thumbs-up' : 'pi pi-thumbs-down'"
+                    styleClass="mb-1"
+                  ></p-tag>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          
+          <!-- Comment -->
+          <div class="rating-comment mb-3">
+            <p class="text-900 line-height-3">{{ rating.comment }}</p>
+          </div>
+          
+          <!-- Pros and Cons -->
+          <div class="pros-cons mb-3" *ngIf="rating.pros?.length || rating.cons?.length">
+            <div class="grid">
+              <div class="col-6" *ngIf="rating.pros?.length">
+                <h6 class="text-success mb-2">
+                  <i class="pi pi-plus-circle mr-1"></i>
+                  Points positifs
+                </h6>
+                <ul class="pros-list">
+                  <li *ngFor="let pro of rating.pros" class="text-sm text-600">{{ pro }}</li>
+                </ul>
+              </div>
+              
+              <div class="col-6" *ngIf="rating.cons?.length">
+                <h6 class="text-danger mb-2">
+                  <i class="pi pi-minus-circle mr-1"></i>
+                  Points d'amélioration
+                </h6>
+                <ul class="cons-list">
+                  <li *ngFor="let con of rating.cons" class="text-sm text-600">{{ con }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tuteur Response -->
+          <div class="tuteur-response mb-3" *ngIf="rating.tuteurResponse">
+            <div class="response-header mb-2">
+              <h6 class="text-primary mb-1">
+                <i class="pi pi-reply mr-1"></i>
+                Votre réponse
+              </h6>
+              <small class="text-500">{{ formatDate(rating.tuteurResponse.createdAt) }}</small>
+            </div>
+            <p class="response-text">{{ rating.tuteurResponse.message }}</p>
+          </div>
+          
+          <!-- Footer Actions -->
+          <div class="rating-footer">
+            <div class="flex justify-content-between align-items-center">
+              
+              <div class="helpful-votes">
+                <span class="text-600 text-sm">
+                  <i class="pi pi-thumbs-up mr-1"></i>
+                  {{ rating.helpfulVotes }} personne(s) ont trouvé cet avis utile
+                </span>
+              </div>
+              
+              <div class="rating-actions">
+                <p-button 
+                  *ngIf="!rating.tuteurResponse"
+                  label="Répondre" 
+                  icon="pi pi-reply" 
+                  (onClick)="openResponseModal(rating)"
+                  styleClass="p-button-text p-button-sm"
+                ></p-button>
+                
+                <p-button 
+                  *ngIf="rating.tuteurResponse"
+                  label="Modifier la réponse" 
+                  icon="pi pi-pencil" 
+                  (onClick)="openResponseModal(rating)"
+                  styleClass="p-button-text p-button-sm"
+                ></p-button>
+                
+                <p-button 
+                  icon="pi pi-thumbs-up" 
+                  (onClick)="markAsHelpful(rating)"
+                  styleClass="p-button-text p-button-sm"
+                  pTooltip="Marquer comme utile"
+                ></p-button>
+                
+                <p-button 
+                  icon="pi pi-flag" 
+                  (onClick)="reportRating(rating)"
+                  styleClass="p-button-text p-button-sm p-button-danger"
+                  pTooltip="Signaler"
+                ></p-button>
+              </div>
+              
+            </div>
+          </div>
+          
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+</div>
+
+<!-- Response Modal -->
+<p-dialog 
+  header="Répondre à l'évaluation" 
+  [(visible)]="showResponseModal" 
+  [modal]="true" 
+  [closable]="true"
+  [style]="{width: '600px'}"
+  (onHide)="closeResponseModal()"
+>
+  <div class="response-modal-content">
+    
+    <!-- Selected Rating Preview -->
+    <div class="selected-rating-preview mb-4" *ngIf="selectedRating">
+      <div class="flex align-items-center">
+        <img 
+          [src]="selectedRating.studentAvatar" 
+          [alt]="selectedRating.studentName"
+          class="student-avatar-sm mr-3"
+        />
+        <div class="flex-1">
+          <h6 class="mb-1">{{ selectedRating.studentName }}</h6>
+          <div class="rating-stars mb-1">
+            <i 
+              *ngFor="let star of getStarArray(selectedRating.score)" 
+              [class]="star ? 'pi pi-star-fill star-filled-sm' : 'pi pi-star star-empty-sm'"
+            ></i>
+          </div>
+          <p class="text-sm text-600 mb-0">{{ selectedRating.comment.substring(0, 100) }}...</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Response Form -->
+    <div class="response-form">
+      <label class="block text-900 font-medium mb-2">Votre réponse</label>
+      <textarea 
+        pInputTextarea 
+        [(ngModel)]="responseText"
+        rows="4" 
+        class="w-full"
+        placeholder="Rédigez votre réponse à cet avis..."
+        maxlength="500"
+      ></textarea>
+      <small class="text-500">{{ responseText.length }}/500 caractères</small>
+    </div>
+    
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <p-button 
+      label="Annuler" 
+      icon="pi pi-times" 
+      (onClick)="closeResponseModal()"
+      styleClass="p-button-text"
+    ></p-button>
+    
+    <p-button 
+      label="Publier la réponse" 
+      icon="pi pi-check" 
+      (onClick)="saveResponse()"
+      [disabled]="!responseText.trim()"
+      styleClass="p-button-success"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<!-- Loading Template -->
+<ng-template #loadingTemplate>
+  <div class="loading-ratings">
+    <div *ngFor="let i of [1,2,3,4]" class="mb-4">
+      <p-card>
+        <div class="flex align-items-start">
+          <p-skeleton shape="circle" size="3rem" class="mr-3"></p-skeleton>
+          <div class="flex-1">
+            <p-skeleton width="10rem" height="1rem" class="mb-2"></p-skeleton>
+            <p-skeleton width="8rem" height="0.8rem" class="mb-3"></p-skeleton>
+            <p-skeleton width="100%" height="4rem" class="mb-2"></p-skeleton>
+            <p-skeleton width="6rem" height="0.7rem"></p-skeleton>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Toast Messages -->
+<p-toast position="top-right"></p-toast>

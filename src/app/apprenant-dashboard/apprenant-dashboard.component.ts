@@ -14,7 +14,11 @@ import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TagModule } from 'primeng/tag';
+import { ProgressSpinnerModule } from 'primeng/progressspinner'; // Add this for loading spinner
 import { MessageService, ConfirmationService } from 'primeng/api';
+
+// Service imports (not component imports - these should not be in the imports array)
+import { MentoringService, EnhancedMentoringRequest, Tutor, Subject } from '../core/services/mentoring.service';
 
 // Your component imports
 import { BookingsTableComponent } from '../bookings-table/bookings-table.component';
@@ -28,7 +32,7 @@ import { MentoringRequestsTableComponent } from '../mentoring-requests-table/men
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    // PrimeNG modules
+    // PrimeNG modules (Remove services from here - they don't belong in imports)
     TabViewModule,
     ButtonModule,
     AvatarModule,
@@ -38,6 +42,7 @@ import { MentoringRequestsTableComponent } from '../mentoring-requests-table/men
     ToastModule,
     ConfirmDialogModule,
     TagModule,
+    ProgressSpinnerModule, // Add this for loading spinner
     // Your components
     BookingsTableComponent,
     MentoringRequestsTableComponent
@@ -55,6 +60,7 @@ export class ApprenantDashboardComponent implements OnInit {
   searchQuery = '';
   user: any = {
     username: 'John Doe',
+    email: 'john.doe@student.com', // Add email
     photoUrl: null
   };
   
@@ -64,45 +70,97 @@ export class ApprenantDashboardComponent implements OnInit {
   // Mentoring dialog
   showMentoringDialog = false;
   isSubmitting = false;
+  isLoadingData = false;
   mentoringForm: FormGroup;
   
-  // Options for dropdowns
+  // Data for dropdowns
+  tutors: Tutor[] = [];
+  subjects: Subject[] = [];
   tutorOptions: any[] = [];
-  moduleOptions: any[] = [];
-  niveauOptions: any[] = [];
+  subjectOptions: any[] = [];
+  levelOptions: any[] = [
+    { label: 'Beginner', value: 'beginner' },
+    { label: 'Intermediate', value: 'intermediate' },
+    { label: 'Advanced', value: 'advanced' },
+    { label: 'Expert', value: 'expert' }
+  ];
+  priceRangeOptions: any[] = [
+    { label: 'Under 30 MAD/hour', value: 'under-30' },
+    { label: '30-40 MAD/hour', value: '30-40' },
+    { label: '40-50 MAD/hour', value: '40-50' },
+    { label: '50-60 MAD/hour', value: '50-60' },
+    { label: 'Above 60 MAD/hour', value: 'above-60' },
+    { label: 'Negotiable', value: 'negotiable' }
+  ];
   
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private mentoringService: MentoringService
   ) {
+    // Update form controls to match the new enhanced form
     this.mentoringForm = this.fb.group({
-      tuteurId: [null, Validators.required],
-      moduleId: [null, Validators.required],
-      niveauId: [null, Validators.required],
-      message: [null, [Validators.required, Validators.minLength(50), Validators.maxLength(500)]]
+      studentName: [this.user?.username || '', [Validators.required, Validators.minLength(2)]],
+      studentEmail: [this.user?.email || '', [Validators.required, Validators.email]],
+      tutorId: [null, Validators.required],
+      subjectId: [null, Validators.required],
+      level: [null, Validators.required],
+      priceRange: [null, Validators.required],
+      note: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(500)]]
     });
   }
   
   ngOnInit(): void {
-    this.loadData();
-    this.loadDropdownOptions();
+    this.loadInitialData();
   }
   
-  loadData(): void {
-    // Sample data loading for demo purposes
-    this.tutorOptions = [
-      { label: 'Prof. John Smith', value: 1, name: 'Prof. John Smith' },
-      { label: 'Dr. Jane Doe', value: 2, name: 'Dr. Jane Doe' },
-      { label: 'Prof. Robert Johnson', value: 3, name: 'Prof. Robert Johnson' }
-    ];
-    
-    this.moduleOptions = [
-      { label: 'Mathematics', value: 1, name: 'Mathematics' },
-      { label: 'Physics', value: 2, name: 'Physics' },
-      { label: 'Computer Science', value: 3, name: 'Computer Science' },
-      { label: 'Chemistry', value: 4, name: 'Chemistry' }
-    ];
+  loadInitialData(): void {
+    // Load tutors and subjects from the service
+    this.loadTutors();
+    this.loadSubjects();
+  }
+  
+  loadTutors(): void {
+    this.mentoringService.getTutors().subscribe({
+      next: (tutors) => {
+        this.tutors = tutors;
+        this.tutorOptions = tutors.map(tutor => ({
+          label: `${tutor.name} - ${tutor.hourlyRate} MAD/hr (${tutor.rating}⭐)`,
+          value: tutor.id,
+          tutor: tutor
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading tutors:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load tutors'
+        });
+      }
+    });
+  }
+  
+  loadSubjects(): void {
+    this.mentoringService.getSubjects().subscribe({
+      next: (subjects) => {
+        this.subjects = subjects;
+        this.subjectOptions = subjects.map(subject => ({
+          label: `${subject.name} (${subject.category})`,
+          value: subject.id,
+          subject: subject
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading subjects:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load subjects'
+        });
+      }
+    });
   }
   
   toggleSidebar(): void {
@@ -112,50 +170,24 @@ export class ApprenantDashboardComponent implements OnInit {
   navigateTo(page: string): void {
     this.activeMenuItem = page;
     console.log('Navigating to:', page);
-    // Add your navigation logic here
-  }
-  
-  loadDropdownOptions(): void {
-    // For demo, we'll use static options
-    // In a real app, these would come from API calls
-    
-    this.tutorOptions = [
-      { name: 'MathExpert', value: 301 },
-      { name: 'PhysicsProf', value: 302 },
-      { name: 'EnglishTeacher', value: 303 },
-      { name: 'ChemistryPro', value: 304 }
-    ];
-    
-    this.moduleOptions = [
-      { name: 'Mathematics', value: 201 },
-      { name: 'Physics', value: 202 },
-      { name: 'English', value: 203 },
-      { name: 'Chemistry', value: 204 },
-      { name: 'Biology', value: 205 },
-      { name: 'Computer Science', value: 206 }
-    ];
-    
-    this.niveauOptions = [
-      { name: 'Beginner', value: 1 },
-      { name: 'Intermediate', value: 2 },
-      { name: 'Advanced', value: 3 }
-    ];
   }
   
   // Methods for action cards
   findTutor(): void {
     console.log('Finding tutor...');
-    // Add navigation to tutor search page
   }
   
   bookSession(): void {
     console.log('Booking session...');
-    // Add booking logic
   }
   
   openMentoringRequestForm(): void {
     this.showMentoringDialog = true;
-    this.mentoringForm.reset();
+    // Pre-populate form with user data
+    this.mentoringForm.patchValue({
+      studentName: this.user?.username || '',
+      studentEmail: this.user?.email || ''
+    });
   }
   
   submitMentoringRequest(): void {
@@ -165,33 +197,73 @@ export class ApprenantDashboardComponent implements OnInit {
         const control = this.mentoringForm.get(key);
         control?.markAsTouched();
       });
+      
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Form Invalid',
+        detail: 'Please fill in all required fields correctly'
+      });
       return;
     }
     
     this.isSubmitting = true;
+    const formData: EnhancedMentoringRequest = this.mentoringForm.value;
     
-    // Get form values
-    const formData = this.mentoringForm.value;
-    console.log('Submitting mentoring request:', formData);
-    
-    // Simulate API call with setTimeout
-    setTimeout(() => {
-      // Reset form and close dialog
-      this.mentoringForm.reset();
-      this.showMentoringDialog = false;
-      
-      // Show success message
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Request Sent',
-        detail: 'Your mentoring request has been sent successfully.'
-      });
-      
-      // Switch to mentoring tab
-      this.activityTabIndex = 2; // Mentoring Requests tab
-      
-      this.isSubmitting = false;
-    }, 1500);
+    this.mentoringService.sendEnhancedMentoringRequest(formData).subscribe({
+      next: (response) => {
+        // Reset form and close dialog
+        this.mentoringForm.reset();
+        this.showMentoringDialog = false;
+        
+        // Show success message
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Request Sent Successfully!',
+          detail: response.message,
+          life: 6000
+        });
+        
+        // Switch to mentoring requests tab
+        this.activityTabIndex = 2;
+      },
+      error: (error) => {
+        console.error('Error submitting mentoring request:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Request Failed',
+          detail: 'Failed to send mentoring request. Please try again.'
+        });
+      },
+      complete: () => {
+        this.isSubmitting = false;
+      }
+    });
+  }
+  
+  onTutorChange(event: any): void {
+    const selectedTutor = this.tutors.find(t => t.id === event.value);
+    if (selectedTutor) {
+      console.log('Selected tutor:', selectedTutor);
+    }
+  }
+  
+  onSubjectChange(event: any): void {
+    const selectedSubject = this.subjects.find(s => s.id === event.value);
+    if (selectedSubject) {
+      console.log('Selected subject:', selectedSubject);
+    }
+  }
+  
+  cancelMentoringRequest(): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to cancel? All entered data will be lost.',
+      header: 'Confirm Cancel',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.mentoringForm.reset();
+        this.showMentoringDialog = false;
+      }
+    });
   }
   
   logout(): void {
@@ -201,7 +273,6 @@ export class ApprenantDashboardComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         console.log('Logging out...');
-        // Add logout logic here
         this.messageService.add({
           severity: 'info',
           summary: 'Logged Out',
@@ -213,4 +284,41 @@ export class ApprenantDashboardComponent implements OnInit {
       }
     });
   }
+
+// Add these methods to your apprenant-dashboard.component.ts
+
+// Add these methods at the end of your ApprenantDashboardComponent class, before the closing brace
+
+getSelectedTutor(): Tutor | null {
+  const tutorId = this.mentoringForm.get('tutorId')?.value;
+  if (!tutorId) return null;
+  
+  const tutorOption = this.tutorOptions.find(t => t.value === tutorId);
+  return tutorOption?.tutor || null;
+}
+
+getSelectedSubject(): Subject | null {
+  const subjectId = this.mentoringForm.get('subjectId')?.value;
+  if (!subjectId) return null;
+  
+  const subjectOption = this.subjectOptions.find(s => s.value === subjectId);
+  return subjectOption?.subject || null;
+}
+
+getSelectedTutorName(): string {
+  const tutorId = this.mentoringForm.get('tutorId')?.value;
+  if (!tutorId) return '';
+  
+  const tutorOption = this.tutorOptions.find(t => t.value === tutorId);
+  return tutorOption?.tutor?.name || '';
+}
+
+getSelectedTutorRate(): number {
+  const tutorId = this.mentoringForm.get('tutorId')?.value;
+  if (!tutorId) return 0;
+  
+  const tutorOption = this.tutorOptions.find(t => t.value === tutorId);
+  return tutorOption?.tutor?.hourlyRate || 0;
+}
+
 }

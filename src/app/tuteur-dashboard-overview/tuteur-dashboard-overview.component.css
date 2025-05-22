@@ -1,0 +1,371 @@
+/* src/app/tuteur-dashboard-overview/tuteur-dashboard-overview.component.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Clean, Simple Dashboard */
+.dashboard-overview {
+  padding: 20px;
+  background-color: #f6f8fa;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Welcome Header */
+.welcome-header {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid #e1e5e9;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.welcome-header h1 {
+  color: #24292e;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
+.welcome-header p {
+  color: #586069;
+  font-size: 14px;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Stats Cards */
+.stats-card {
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease;
+}
+
+.stats-card:hover {
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.stats-card .p-card-body {
+  padding: 20px;
+}
+
+.earnings-card {
+  border-left: 4px solid #28a745;
+}
+
+.students-card {
+  border-left: 4px solid #007bff;
+}
+
+.rating-card {
+  border-left: 4px solid #ffc107;
+}
+
+.pending-card {
+  border-left: 4px solid #6f42c1;
+}
+
+.stats-card h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #24292e;
+  margin-bottom: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
+.stats-card p {
+  color: #586069;
+  font-size: 13px;
+  margin: 0;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+
+.stats-icon {
+  font-size: 24px;
+  color: #959da5;
+}
+
+/* Quick Actions - Single Row */
+.actions-grid .grid {
+  display: flex;
+  gap: 16px;
+}
+
+.actions-grid .grid > div {
+  flex: 1;
+}
+
+.quick-action-card {
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 100%;
+  min-height: 100px;
+}
+
+.quick-action-card:hover {
+  border-color: #0366d6;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.action-icon {
+  font-size: 24px;
+  color: #0366d6;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.quick-action-card h4 {
+  color: #24292e;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
+.quick-action-card p {
+  color: #586069;
+  font-size: 11px;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Charts - Single Row */
+.charts-row .grid {
+  display: flex;
+  gap: 20px;
+}
+
+.charts-row .grid > div {
+  flex: 1;
+}
+
+/* Cards */
+.p-card {
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.p-card .p-card-header {
+  background: #f6f8fa;
+  border-bottom: 1px solid #e1e5e9;
+  padding: 16px 20px;
+}
+
+.p-card .p-card-title {
+  color: #24292e;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.p-card .p-card-body {
+  padding: 20px;
+}
+
+/* Upcoming Classes */
+.upcoming-class-item {
+  background: #f6f8fa;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  padding: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.upcoming-class-item:hover {
+  background: #f1f3f4;
+}
+
+.student-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  border: 1px solid #e1e5e9;
+}
+
+.upcoming-class-item h5 {
+  color: #24292e;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 2px 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.upcoming-class-item p {
+  color: #586069;
+  font-size: 12px;
+  margin: 0 0 2px 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.upcoming-class-item small {
+  color: #959da5;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Activity Feed */
+.activity-item {
+  background: #f6f8fa;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  padding: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.activity-item:hover {
+  background: #f1f3f4;
+}
+
+.activity-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #0366d6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+}
+
+.activity-item h6 {
+  color: #24292e;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 2px 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.activity-item p {
+  color: #586069;
+  font-size: 12px;
+  margin: 0 0 2px 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.activity-item small {
+  color: #959da5;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Buttons */
+.p-button {
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+}
+
+.p-button-success {
+  background: #28a745;
+  border-color: #28a745;
+}
+
+.p-button-success:hover {
+  background: #218838;
+  border-color: #1e7e34;
+}
+
+.p-button-outlined {
+  background: transparent;
+  color: #0366d6;
+  border-color: #0366d6;
+}
+
+.p-button-outlined:hover {
+  background: #0366d6;
+  color: white;
+}
+
+.p-button-text {
+  background: transparent;
+  color: #0366d6;
+  border: none;
+}
+
+.p-button-text:hover {
+  background: rgba(3, 102, 214, 0.1);
+}
+
+/* Tags */
+.p-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+/* Loading */
+.loading-dashboard {
+  padding: 20px;
+  background-color: #f6f8fa;
+  min-height: 100vh;
+}
+
+/* Empty States */
+.text-center {
+  text-align: center;
+  color: #586069;
+}
+
+.text-center i {
+  color: #d1d5da;
+  margin-bottom: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-overview {
+    padding: 12px;
+  }
+  
+  .welcome-header {
+    padding: 16px;
+  }
+  
+  .welcome-header h1 {
+    font-size: 20px;
+  }
+  
+  .stats-card .p-card-body {
+    padding: 16px;
+  }
+  
+  .stats-card h3 {
+    font-size: 24px;
+  }
+  
+  .quick-action-card {
+    padding: 16px;
+  }
+  
+  .action-icon {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-overview {
+    padding: 8px;
+  }
+  
+  .welcome-header {
+    padding: 12px;
+  }
+  
+  .welcome-header h1 {
+    font-size: 18px;
+  }
+}

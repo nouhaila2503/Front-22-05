@@ -1,0 +1,270 @@
+<!-- src/app/my-offers/my-offers.component.html -->
+
+<p-card>
+  <ng-template pTemplate="header">
+    <div class="card-header">
+      <h2>Mes Offres de Cours</h2>
+      <div class="header-actions">
+        <button 
+          pButton 
+          label="Nouvelle offre" 
+          icon="pi pi-plus"
+          class="p-button-primary"
+          (click)="createNewOffer()">
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="content">
+    <!-- Filters -->
+    <div class="table-header">
+      <div class="search-container">
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input 
+            pInputText 
+            type="text" 
+            (input)="applyGlobalFilter($event)"
+            placeholder="Rechercher..."
+            class="search-input"
+          />
+        </span>
+      </div>
+      
+      <div class="filter-container">
+        <p-dropdown
+          [options]="statusOptions"
+          [(ngModel)]="selectedStatus"
+          placeholder="Statut"
+          (onChange)="clearFilters()"
+          class="filter-dropdown">
+        </p-dropdown>
+        
+        <p-dropdown
+          [options]="niveauOptions"
+          [(ngModel)]="selectedNiveau"
+          placeholder="Niveau"
+          (onChange)="clearFilters()"
+          class="filter-dropdown">
+        </p-dropdown>
+        
+        <button 
+          pButton 
+          label="Effacer" 
+          icon="pi pi-filter-slash"
+          class="p-button-outlined"
+          (click)="clearFilters()">
+        </button>
+      </div>
+    </div>
+
+    <!-- Table using modern PrimeNG syntax -->
+    <p-table 
+      [value]="offers" 
+      [globalFilterFields]="['title', 'niveau']"
+      [loading]="loading"
+      selectionMode="multiple" 
+      [(selection)]="selectedOffers"
+      dataKey="id"
+      responsiveLayout="scroll"
+      [paginator]="true"
+      [rows]="rows"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} offres"
+      styleClass="p-datatable-gridlines">
+      
+      <!-- Table Header -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3em">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th pSortableColumn="title">
+            Cours 
+            <p-sortIcon field="title"></p-sortIcon>
+          </th>
+          <th pSortableColumn="niveau">
+            Niveau 
+            <p-sortIcon field="niveau"></p-sortIcon>
+          </th>
+          <th pSortableColumn="prixParHeure">
+            Prix 
+            <p-sortIcon field="prixParHeure"></p-sortIcon>
+          </th>
+          <th>Étudiants</th>
+          <th pSortableColumn="isActive">
+            Statut 
+            <p-sortIcon field="isActive"></p-sortIcon>
+          </th>
+          <th pSortableColumn="createdAt">
+            Créé le 
+            <p-sortIcon field="createdAt"></p-sortIcon>
+          </th>
+          <th style="width: 200px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <!-- Table Body -->
+      <ng-template pTemplate="body" let-offer let-rowIndex="rowIndex">
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="offer"></p-tableCheckbox>
+          </td>
+          <td>
+            <div class="course-title">
+              <strong>{{ offer.title }}</strong>
+              <div class="course-description" *ngIf="offer.description">
+                <small>{{ offer.description | slice:0:100 }}{{ offer.description?.length > 100 ? '...' : '' }}</small>
+              </div>
+            </div>
+          </td>
+          <td>
+            <p-tag 
+              [value]="offer.niveau" 
+              [severity]="getNiveauSeverity(offer.niveau)">
+            </p-tag>
+          </td>
+          <td>
+            <span class="price">{{ formatPrice(offer.prixParHeure) }}</span>
+          </td>
+          <td>
+            <div class="students-info">
+              <span class="current">{{ offer.currentStudents || 0 }}</span>
+              <span class="separator">/</span>
+              <span class="max">{{ offer.maxStudents }}</span>
+              <div class="booking-progress">
+                <p-progressBar 
+                  [value]="getBookingRate(offer.currentStudents || 0, offer.maxStudents)"
+                  [showValue]="false"
+                  styleClass="progress-sm">
+                </p-progressBar>
+              </div>
+            </div>
+          </td>
+          <td>
+            <p-tag 
+              [value]="getStatusLabel(offer.isActive)" 
+              [severity]="getSeverity(offer.isActive)">
+            </p-tag>
+          </td>
+          <td>
+            <span *ngIf="offer.createdAt">{{ formatDate(offer.createdAt) }}</span>
+            <span *ngIf="!offer.createdAt">-</span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button 
+                pButton 
+                type="button"
+                icon="pi pi-eye" 
+                class="p-button-rounded p-button-text p-button-sm"
+                (click)="viewOffer(offer)"
+                pTooltip="Voir les détails">
+              </button>
+              <button 
+                pButton 
+                type="button"
+                icon="pi pi-pencil" 
+                class="p-button-rounded p-button-text p-button-sm"
+                (click)="editOffer(offer)"
+                pTooltip="Modifier">
+              </button>
+              <button 
+                pButton 
+                type="button"
+                icon="pi pi-copy" 
+                class="p-button-rounded p-button-text p-button-sm"
+                (click)="duplicateOffer(offer)"
+                pTooltip="Dupliquer">
+              </button>
+              <button 
+                pButton 
+                type="button"
+                [icon]="offer.isActive ? 'pi pi-eye-slash' : 'pi pi-eye'" 
+                class="p-button-rounded p-button-text p-button-sm"
+                (click)="toggleOfferStatus(offer)"
+                [pTooltip]="offer.isActive ? 'Désactiver' : 'Activer'">
+              </button>
+              <button 
+                pButton 
+                type="button"
+                icon="pi pi-trash" 
+                class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                (click)="deleteOffer(offer)"
+                pTooltip="Supprimer">
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Loading Template -->
+      <ng-template pTemplate="loadingbody">
+        <tr>
+          <td colspan="8">
+            <div class="loading-skeleton">
+              <p-skeleton height="2rem" class="mb-2"></p-skeleton>
+              <p-skeleton height="2rem" class="mb-2"></p-skeleton>
+              <p-skeleton height="2rem" class="mb-2"></p-skeleton>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Empty State -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center">
+            <div class="empty-state">
+              <i class="pi pi-book" style="font-size: 3rem; color: var(--text-color-secondary);"></i>
+              <h3>Aucune offre trouvée</h3>
+              <p>Vous n'avez pas encore créé d'offres de cours.</p>
+              <button 
+                pButton 
+                label="Créer une offre" 
+                icon="pi pi-plus" 
+                class="p-button-sm"
+                (click)="createNewOffer()">
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <!-- Bulk Actions -->
+    <div class="bulk-actions" *ngIf="selectedOffers.length > 0">
+      <div class="selection-info">
+        <span>{{ selectedOffers.length }} offre(s) sélectionnée(s)</span>
+      </div>
+      <div class="bulk-buttons">
+        <button 
+          pButton 
+          label="Activer" 
+          icon="pi pi-check" 
+          class="p-button-success p-button-sm"
+          (click)="bulkActivate()">
+        </button>
+        <button 
+          pButton 
+          label="Désactiver" 
+          icon="pi pi-times" 
+          class="p-button-warning p-button-sm"
+          (click)="bulkDeactivate()">
+        </button>
+        <button 
+          pButton 
+          label="Exporter" 
+          icon="pi pi-download" 
+          class="p-button-outlined p-button-sm"
+          (click)="exportOffers()">
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-card>
+
+<!-- Toast and Confirm Dialog -->
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

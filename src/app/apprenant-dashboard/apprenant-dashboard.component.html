@@ -8,13 +8,10 @@
         <i class="pi" [ngClass]="sidebarCollapsed ? 'pi-angle-right' : 'pi-angle-left'"></i>
       </button>
     </div>
-    
+
     <div class="user-profile">
       <div class="avatar-container">
-        <p-avatar 
-          [image]="user?.photoUrl || 'assets/images/default-avatar.png'"
-          shape="circle" 
-          size="large">
+        <p-avatar [image]="user?.photoUrl || 'assets/images/default-avatar.png'" shape="circle" size="large">
         </p-avatar>
       </div>
       <div class="user-info" *ngIf="!sidebarCollapsed">
@@ -22,7 +19,7 @@
         <p-tag value="Apprenant" severity="info" [rounded]="true"></p-tag>
       </div>
     </div>
-    
+
     <div class="sidebar-menu">
       <ul>
         <li [class.active]="activeMenuItem === 'dashboard'">
@@ -62,7 +59,7 @@
           </a>
         </li>
       </ul>
-      
+
       <div class="sidebar-footer">
         <button class="logout-btn" (click)="logout()">
           <i class="pi pi-sign-out"></i>
@@ -71,7 +68,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Main Content -->
   <div class="dashboard-content">
     <!-- Topbar -->
@@ -82,7 +79,7 @@
         </button>
         <h2 class="page-title">Dashboard</h2>
       </div>
-      
+
       <div class="topbar-right">
         <div class="search-box">
           <span class="p-input-icon-left">
@@ -90,17 +87,18 @@
             <input type="text" pInputText placeholder="Search..." [(ngModel)]="searchQuery" />
           </span>
         </div>
-        
+
         <div class="notification-icon">
           <button class="icon-btn" pButton icon="pi pi-bell" badge="3" badgeClass="p-badge-danger"></button>
         </div>
-        
+
         <div class="user-dropdown">
-          <p-avatar [image]="user?.photoUrl || 'assets/images/default-avatar.png'" shape="circle" size="normal"></p-avatar>
+          <p-avatar [image]="user?.photoUrl || 'assets/images/default-avatar.png'" shape="circle"
+            size="normal"></p-avatar>
         </div>
       </div>
     </div>
-    
+
     <!-- Main Dashboard Content -->
     <div class="dashboard-main">
       <!-- Quick Stats Section -->
@@ -114,7 +112,7 @@
             <p>Upcoming Sessions</p>
           </div>
         </div>
-        
+
         <div class="stat-card">
           <div class="stat-icon">
             <i class="pi pi-clock"></i>
@@ -124,7 +122,7 @@
             <p>Total Learning Hours</p>
           </div>
         </div>
-        
+
         <div class="stat-card">
           <div class="stat-icon">
             <i class="pi pi-book"></i>
@@ -134,7 +132,7 @@
             <p>Active Courses</p>
           </div>
         </div>
-        
+
         <div class="stat-card">
           <div class="stat-icon">
             <i class="pi pi-check-circle"></i>
@@ -145,13 +143,13 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Actions Section -->
       <div class="actions-section">
         <h2 class="section-title">Quick Actions</h2>
-        
+
         <div class="actions-grid">
-          <div class="action-card" (click)="findTutor()">
+          <div class="action-card" (click)="findTutor()" tabindex="0">
             <div class="action-icon">
               <i class="pi pi-search"></i>
             </div>
@@ -159,8 +157,8 @@
             <p>Search for tutors by subject or availability</p>
             <button pButton icon="pi pi-arrow-right" label="Search Now"></button>
           </div>
-          
-          <div class="action-card" (click)="bookSession()">
+
+          <div class="action-card" (click)="bookSession()" tabindex="0">
             <div class="action-icon">
               <i class="pi pi-calendar-plus"></i>
             </div>
@@ -168,8 +166,8 @@
             <p>Schedule a new learning session with your tutor</p>
             <button pButton icon="pi pi-arrow-right" label="Book Now"></button>
           </div>
-          
-          <div class="action-card" (click)="showMentoringDialog = true">
+
+          <div class="action-card" (click)="openMentoringRequestForm()" tabindex="0">
             <div class="action-icon">
               <i class="pi pi-comments"></i>
             </div>
@@ -179,11 +177,11 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Activity Section -->
       <div class="activity-section">
         <h2 class="section-title">Recent Activity</h2>
-        
+
         <div class="activity-tabs">
           <p-tabView [(activeIndex)]="activityTabIndex">
             <p-tabPanel header="Upcoming Sessions">
@@ -203,7 +201,7 @@
                     <button pButton icon="pi pi-calendar-minus" class="p-button-text p-button-danger"></button>
                   </div>
                 </div>
-                
+
                 <div class="session-card">
                   <div class="session-date">
                     <span class="date">25</span>
@@ -221,11 +219,11 @@
                 </div>
               </div>
             </p-tabPanel>
-            
+
             <p-tabPanel header="Bookings">
               <app-bookings-table></app-bookings-table>
             </p-tabPanel>
-            
+
             <p-tabPanel header="Mentoring Requests">
               <app-mentoring-requests-table></app-mentoring-requests-table>
             </p-tabPanel>
@@ -236,74 +234,167 @@
   </div>
 </div>
 
-<!-- Mentoring Request Dialog -->
-<p-dialog [(visible)]="showMentoringDialog" 
-          [style]="{width: '550px'}"
-          [modal]="true" 
-          [draggable]="false" 
-          [resizable]="false"
-          styleClass="mentoring-dialog"
-          header="Request Mentoring">
-  <form [formGroup]="mentoringForm" (ngSubmit)="submitMentoringRequest()">
-    <div class="form-field">
-      <label for="tutor">Select Tutor</label>
-      <p-dropdown id="tutor" 
-                  [options]="tutorOptions" 
-                  formControlName="tuteurId"
-                  [filter]="true" 
-                  filterBy="name" 
-                  placeholder="Select a tutor"
-                  [showClear]="true">
-      </p-dropdown>
-      <small *ngIf="mentoringForm.get('tuteurId')?.invalid && mentoringForm.get('tuteurId')?.touched" class="validation-error">
-        Please select a tutor
-      </small>
+<!-- Enhanced Mentoring Request Dialog -->
+<p-dialog [(visible)]="showMentoringDialog" [style]="{width: '650px'}" [modal]="true" [draggable]="false"
+  [resizable]="false" class = "dialog-request" styleClass="mentoring-dialog" header="Send Mentoring Request" [closable]="false">
+
+  <div class="dialog-content">
+    <div class="form-intro">
+      <p class="intro-text">
+        <i class="pi pi-info-circle"></i>
+        Send a personalized mentoring request to connect with expert tutors for long-term guidance.
+      </p>
     </div>
-    
-    <div class="form-field">
-      <label for="module">Select Module</label>
-      <p-dropdown id="module" 
-                  [options]="moduleOptions" 
-                  formControlName="moduleId"
-                  [filter]="true" 
-                  filterBy="name" 
-                  placeholder="Select a module"
-                  [showClear]="true">
-      </p-dropdown>
-      <small *ngIf="mentoringForm.get('moduleId')?.invalid && mentoringForm.get('moduleId')?.touched" class="validation-error">
-        Please select a module
-      </small>
-    </div>
-    
-    <div class="form-field">
-      <label for="niveau">Skill Level</label>
-      <p-dropdown id="niveau" 
-                  [options]="niveauOptions" 
-                  formControlName="niveauId"
-                  placeholder="Select your skill level"
-                  [showClear]="true">
-      </p-dropdown>
-      <small *ngIf="mentoringForm.get('niveauId')?.invalid && mentoringForm.get('niveauId')?.touched" class="validation-error">
-        Please select your skill level
-      </small>
-    </div>
-    
-    <div class="form-field">
-      <label for="message">Message to Tutor</label>
-      <textarea id="message" pInputTextarea formControlName="message" rows="5" placeholder="Describe what you want to learn"></textarea>
-      <small *ngIf="mentoringForm.get('message')?.invalid && mentoringForm.get('message')?.touched" class="validation-error">
-        Please enter a message (50-500 characters)
-      </small>
-    </div>
-    
-    <div class="form-actions">
-      <button pButton type="submit" label="Send Request" [disabled]="mentoringForm.invalid || isSubmitting">
-        <i *ngIf="isSubmitting" class="pi pi-spinner pi-spin"></i>
-        <span *ngIf="!isSubmitting">Send Request</span>
-      </button>
-      <button pButton type="button" label="Cancel" class="p-button-text" (click)="showMentoringDialog = false"></button>
-    </div>
-  </form>
+
+    <form  class= "form" [formGroup]="mentoringForm" (ngSubmit)="submitMentoringRequest()">
+      <div class="form-grid">
+        <!-- Student Name -->
+
+        <div class="form-field">
+          <label for="studentName" class="required-label">Your Name</label>
+          <input type="text" pInputText id="studentName" formControlName="studentName"
+            placeholder="Enter your full name"
+            [class.ng-invalid]="mentoringForm.get('studentName')?.invalid && mentoringForm.get('studentName')?.touched" />
+          <small *ngIf="mentoringForm.get('studentName')?.invalid && mentoringForm.get('studentName')?.touched"
+            class="validation-error">
+            <i class="pi pi-exclamation-circle"></i>
+            Name is required (minimum 2 characters)
+          </small>
+        </div>
+
+        <!-- Student Email -->
+        <div class="form-field">
+          <label for="studentEmail" class="required-label">Your Email</label>
+          <input type="email" pInputText id="studentEmail" formControlName="studentEmail"
+            placeholder="Enter your email address"
+            [class.ng-invalid]="mentoringForm.get('studentEmail')?.invalid && mentoringForm.get('studentEmail')?.touched" />
+          <small *ngIf="mentoringForm.get('studentEmail')?.invalid && mentoringForm.get('studentEmail')?.touched"
+            class="validation-error">
+            <i class="pi pi-exclamation-circle"></i>
+            Valid email address is required
+          </small>
+        </div>
+
+        <!-- Tutor Selection -->
+        <!-- Replace the problematic sections in the Tutor Selection dropdown -->
+
+        <!-- Tutor Selection -->
+        <div class="form-field">
+          <label for="tutorId" class="required-label">Select Tutor</label>
+          <p-dropdown id="tutorId" [options]="tutorOptions" formControlName="tutorId" (onChange)="onTutorChange($event)"
+            [filter]="true" filterBy="label" placeholder="Choose your preferred tutor" [showClear]="true"
+            styleClass="tutor-dropdown">
+            <ng-template pTemplate="selectedItem">
+              <div class="selected-tutor" *ngIf="getSelectedTutor()">
+                <div class="tutor-info">
+                  <strong>{{getSelectedTutor()?.name}}</strong>
+                  <span class="tutor-rate">{{getSelectedTutor()?.hourlyRate}} MAD/hr</span>
+                </div>
+              </div>
+            </ng-template>
+            <ng-template let-tutor pTemplate="item">
+              <div class="tutor-option">
+                <div class="tutor-info">
+                  <strong>{{tutor.tutor?.name}}</strong>
+                  <div class="tutor-details">
+                    <span class="specialization">{{tutor.tutor?.specializations?.join(', ')}}</span>
+                    <span class="rating">{{tutor.tutor?.rating}}⭐</span>
+                    <span class="rate">{{tutor.tutor?.hourlyRate}} MAD/hr</span>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small *ngIf="mentoringForm.get('tutorId')?.invalid && mentoringForm.get('tutorId')?.touched"
+            class="validation-error">
+            <i class="pi pi-exclamation-circle"></i>
+            Please select a tutor
+          </small>
+        </div>
+
+
+
+        <!-- Subject Selection -->
+        <div class="form-field">
+          <label for="subjectId" class="required-label">Subject</label>
+          <p-dropdown id="subjectId" [options]="subjectOptions" formControlName="subjectId"
+            (onChange)="onSubjectChange($event)" [filter]="true" filterBy="label"
+            placeholder="Select the subject you want to learn" [showClear]="true">
+            <ng-template let-subject pTemplate="item">
+              <div class="subject-option">
+                <strong>{{subject.subject?.name}}</strong>
+                <small class="subject-category">{{subject.subject?.category}}</small>
+                <p class="subject-description">{{subject.subject?.description}}</p>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small *ngIf="mentoringForm.get('subjectId')?.invalid && mentoringForm.get('subjectId')?.touched"
+            class="validation-error">
+            <i class="pi pi-exclamation-circle"></i>
+            Please select a subject
+          </small>
+        </div>
+
+        <!-- Level Selection -->
+        <div class="form-field">
+          <label for="level" class="required-label">Your Current Level</label>
+          <p-dropdown id="level" [options]="levelOptions" formControlName="level" placeholder="Select your skill level"
+            [showClear]="true">
+          </p-dropdown>
+          <small *ngIf="mentoringForm.get('level')?.invalid && mentoringForm.get('level')?.touched"
+            class="validation-error">
+            <i class="pi pi-exclamation-circle"></i>
+            Please select your skill level
+          </small>
+        </div>
+
+        <!-- Price Range -->
+        <div class="form-field">
+          <label for="priceRange" class="required-label">Preferred Price Range</label>
+          <p-dropdown id="priceRange" [options]="priceRangeOptions" formControlName="priceRange"
+            placeholder="Select your budget range" [showClear]="true">
+          </p-dropdown>
+          <small *ngIf="mentoringForm.get('priceRange')?.invalid && mentoringForm.get('priceRange')?.touched"
+            class="validation-error">
+            <i class="pi pi-exclamation-circle"></i>
+            Please select a price range
+          </small>
+        </div>
+
+        <!-- Note/Message -->
+        <div class="form-field full-width">
+          <label for="note" class="required-label">Message to Tutor</label>
+          <textarea id="note" pInputTextarea formControlName="note" rows="4"
+            placeholder="Describe your learning goals, what you hope to achieve, and any specific requirements or questions you have..."
+            [class.ng-invalid]="mentoringForm.get('note')?.invalid && mentoringForm.get('note')?.touched">
+          </textarea>
+          <div class="character-count">
+            {{mentoringForm.get('note')?.value?.length || 0}}/500 characters
+          </div>
+          <small *ngIf="mentoringForm.get('note')?.invalid && mentoringForm.get('note')?.touched"
+            class="validation-error">
+            <i class="pi pi-exclamation-circle"></i>
+            Message is required (20-500 characters)
+          </small>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button pButton type="button" label="Cancel" icon="pi pi-times" class="p-button-outlined p-button-secondary"
+          (click)="cancelMentoringRequest()" [disabled]="isSubmitting">
+        </button>
+
+        <button pButton type="submit" [disabled]="mentoringForm.invalid || isSubmitting"
+          class="p-button-primary submit-button">
+          <i *ngIf="isSubmitting" class="pi pi-spinner pi-spin"></i>
+          <i *ngIf="!isSubmitting" class="pi pi-send"></i>
+          <span *ngIf="!isSubmitting">Send Request</span>
+          <span *ngIf="isSubmitting">Sending...</span>
+        </button>
+      </div>
+    </form>
+  </div>
 </p-dialog>
 
 <!-- Toast and Confirmation Dialog -->

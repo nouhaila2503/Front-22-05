@@ -16,12 +16,12 @@ import { SelectButtonModule } from 'primeng/selectbutton';
     CommonModule,
     RouterModule,
     FormsModule,ButtonModule,
-    ButtonModule,
     DataViewModule,
     SelectButtonModule
   ],
+  standalone: true,
   templateUrl: './featured-courses.component.html',
-  styleUrls: ['./featured-courses.component.css']
+  styleUrls: ['./featured-courses.component.css'],
 })
 export class FeaturedCoursesComponent implements OnInit {
   @Input() courses: any[] = [];

@@ -1,3 +1,11 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.featured-courses-section{    
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+
 /* Featured Courses Section */
 .featured-courses-section {
   margin-bottom: 3rem;
