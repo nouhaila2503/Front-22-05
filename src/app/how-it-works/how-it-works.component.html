@@ -1,0 +1,75 @@
+<section class="how-it-works-section">
+  <!-- Animated Background Elements -->
+  <div class="animated-bg">
+    <div class="bg-shape shape1"></div>
+    <div class="bg-shape shape2"></div>
+    <div class="bg-shape shape3"></div>
+  </div>
+  
+  <div class="section-header fade-in-up">
+    <h2>How TutorLink Works</h2>
+    <p class="subtitle">Finding and connecting with the perfect tutor has never been easier</p>
+  </div>
+
+  <!-- Desktop View: Horizontal Steps -->
+  <div class="steps-container desktop-view">
+    <div *ngFor="let step of steps; let i = index" 
+         class="step-item fade-in-up" 
+         [ngClass]="{'step-active': step.active}"
+         (mouseenter)="setActive(i, true)"
+         (mouseleave)="setActive(i, step.active)">
+      
+      <div class="step-circle" [style.background-color]="step.color">
+        <div class="step-number">{{i + 1}}</div>
+        <div class="step-icon">
+          <i [class]="step.icon"></i>
+        </div>
+      </div>
+      
+      <div class="step-content">
+        <h3 [style.color]="step.color">{{step.title}}</h3>
+        <p>{{step.description}}</p>
+      </div>
+      
+      <!-- Connector line -->
+      <div *ngIf="i < steps.length - 1" class="step-connector">
+        <div class="connector-line-container">
+          <div class="connector-line" [ngClass]="{'line-active': activeStepIndex >= i}"></div>
+        </div>
+        <i class="fas fa-arrow-right connector-arrow" [ngClass]="{'arrow-animated': activeStepIndex >= i}"></i>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Mobile View: Vertical Steps with Progress Line -->
+  <div class="steps-container-mobile mobile-view">
+    <div class="vertical-progress-line">
+      <div class="progress-line-fill" [style.height]="(activeStepIndex + 1) * 25 + '%'"></div>
+    </div>
+    
+    <div *ngFor="let step of steps; let i = index" 
+         class="step-item-mobile fade-in-up"
+         [ngClass]="{'step-active': step.active}"
+         (mouseenter)="setActive(i, true)"
+         (mouseleave)="setActive(i, step.active)">
+         
+      <div class="step-circle" [style.background-color]="step.color" [ngClass]="{'active': activeStepIndex >= i}">
+        <div class="step-number">{{i + 1}}</div>
+        <div class="step-icon">
+          <i [class]="step.icon"></i>
+        </div>
+      </div>
+      
+      <div class="step-content-mobile">
+        <h3 [style.color]="step.color">{{step.title}}</h3>
+        <p>{{step.description}}</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Call to Action -->
+  <div class="cta-container fade-in-up">
+    <p>Ready to start your learning journey?</p>
+    <button class="cta-button">Find a Tutor Now</button>
+  </div>
+</section>

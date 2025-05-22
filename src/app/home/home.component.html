@@ -1,0 +1,41 @@
+<!-- Main Home Container -->
+<div class="home-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <p-progressSpinner styleClass="custom-spinner"></p-progressSpinner>
+    <p>Loading amazing content...</p>
+  </div>
+
+  <!-- Error Display -->
+  <p-toast position="top-right"></p-toast>
+
+  <!-- Content (only displayed when loading is complete) -->
+  <div *ngIf="!isLoading" class="content-container">
+
+
+
+    <!-- Hero Section-->
+    <app-herosection></app-herosection> 
+
+
+  <!-- How It Works Section -->
+    <div class="section-margin">
+      <app-how-it-works></app-how-it-works>
+    </div>
+
+
+    <!-- Featured Tutors Section -->
+    <div class="section-margin">
+      <app-featured-tutors [tutors]="featuredTutors"></app-featured-tutors>
+    </div>
+
+    <!-- Featured Courses Section -->
+    <div class="section-margin">
+      <app-featured-courses [courses]="featuredCourses"></app-featured-courses>
+    </div>
+
+
+
+
+  </div>
+</div>

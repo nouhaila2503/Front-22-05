@@ -1,0 +1,117 @@
+<div class="hero-section">
+  <div class="background-decoration"></div>
+  
+  <div class="hero-content">
+    <h1 class="hero-title">Find Your Perfect Tutor</h1>
+    <p class="hero-subtitle">Connect with expert tutors to achieve your learning goals faster</p>
+    
+    <div class="search-container">
+      <form [formGroup]="searchForm" (ngSubmit)="search()">
+        <div class="search-form">
+          <!-- Module Autocomplete -->
+          <div class="search-field">
+            <span class="p-float-label">
+              <p-autoComplete 
+                formControlName="moduleId" 
+                [suggestions]="filteredModules" 
+                (completeMethod)="filterModule($event)" 
+                field="name" 
+                [dropdown]="true"
+                [forceSelection]="true"
+                styleClass="w-100"
+                inputStyleClass="w-100"
+                [inputStyle]="{'width':'100%'}"
+                dataKey="id">
+              </p-autoComplete>
+              <label for="module">What do you want to learn?</label>
+            </span>
+          </div>
+          
+          <!-- Domain Dropdown -->
+          <div class="search-field">
+            <span class="p-float-label">
+              <p-dropdown 
+                formControlName="domaineId" 
+                [options]="domaines" 
+                optionLabel="name" 
+                optionValue="id" 
+                [showClear]="true" 
+                placeholder="Select Domain"
+                styleClass="w-100">
+              </p-dropdown>
+              <label for="domaine">Subject Area</label>
+            </span>
+          </div>
+          
+          <!-- Level Dropdown -->
+          <div class="search-field">
+            <span class="p-float-label">
+              <p-dropdown 
+                formControlName="niveau" 
+                [options]="niveaux" 
+                optionLabel="label" 
+                optionValue="value" 
+                [showClear]="true" 
+                placeholder="Select Level"
+                styleClass="w-100">
+              </p-dropdown>
+              <label for="niveau">Level</label>
+            </span>
+          </div>
+          
+          <!-- Price Range Dropdown -->
+          <div class="search-field">
+            <span class="p-float-label">
+              <p-dropdown 
+                formControlName="priceRange" 
+                [options]="priceRanges" 
+                optionLabel="label" 
+                optionValue="value" 
+                [showClear]="true" 
+                placeholder="Price Range"
+                styleClass="w-100">
+              </p-dropdown>
+              <label for="priceRange">Price</label>
+            </span>
+          </div>
+          
+          <!-- Search Button -->
+          <div class="search-button-container">
+            <button 
+              pButton 
+              type="submit" 
+              label="Search" 
+              icon="pi pi-search" 
+              class="p-button-rounded search-button"
+              [disabled]="searchForm.invalid">
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <div class="quick-links">
+      <p-button 
+        label="Browse Tutors" 
+        icon="pi pi-users" 
+                class="quick-link-button"
+        styleClass="p-button-text p-button-rounded quick-link-button"
+        [routerLink]="['/search']">
+      </p-button>
+      <p-button 
+        label="Explore Modules" 
+        icon="pi pi-book" 
+        class="quick-link-button"
+        styleClass="p-button-text p-button-rounded quick-link-button"
+        [routerLink]="['/modules']">
+      </p-button>
+      <p-button 
+        label="Join as a Tutor" 
+        icon="pi pi-user-plus" 
+                class="quick-link-button"
+        styleClass="p-button-text p-button-rounded quick-link-button"
+        [routerLink]="['/register', 'tutor']">
+      </p-button>
+    </div>
+  </div>
+</div>

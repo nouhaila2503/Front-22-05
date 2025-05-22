@@ -1,0 +1,311 @@
+<!-- apprenant-dashboard.component.html -->
+<div class="dashboard-wrapper">
+  <!-- Sidebar -->
+  <div class="dashboard-sidebar" [class.collapsed]="sidebarCollapsed">
+    <div class="sidebar-header">
+      <img src="assets/images/logo.png" alt="TutorLink" class="logo" />
+      <button class="sidebar-toggle" (click)="toggleSidebar()">
+        <i class="pi" [ngClass]="sidebarCollapsed ? 'pi-angle-right' : 'pi-angle-left'"></i>
+      </button>
+    </div>
+    
+    <div class="user-profile">
+      <div class="avatar-container">
+        <p-avatar 
+          [image]="user?.photoUrl || 'assets/images/default-avatar.png'"
+          shape="circle" 
+          size="large">
+        </p-avatar>
+      </div>
+      <div class="user-info" *ngIf="!sidebarCollapsed">
+        <h3>{{ user?.username || 'Student' }}</h3>
+        <p-tag value="Apprenant" severity="info" [rounded]="true"></p-tag>
+      </div>
+    </div>
+    
+    <div class="sidebar-menu">
+      <ul>
+        <li [class.active]="activeMenuItem === 'dashboard'">
+          <a (click)="navigateTo('dashboard')">
+            <i class="pi pi-home"></i>
+            <span *ngIf="!sidebarCollapsed">Dashboard</span>
+          </a>
+        </li>
+        <li [class.active]="activeMenuItem === 'courses'">
+          <a (click)="navigateTo('courses')">
+            <i class="pi pi-book"></i>
+            <span *ngIf="!sidebarCollapsed">My Courses</span>
+          </a>
+        </li>
+        <li [class.active]="activeMenuItem === 'tutors'">
+          <a (click)="navigateTo('tutors')">
+            <i class="pi pi-users"></i>
+            <span *ngIf="!sidebarCollapsed">Find Tutors</span>
+          </a>
+        </li>
+        <li [class.active]="activeMenuItem === 'bookings'">
+          <a (click)="navigateTo('bookings')">
+            <i class="pi pi-calendar"></i>
+            <span *ngIf="!sidebarCollapsed">My Bookings</span>
+          </a>
+        </li>
+        <li [class.active]="activeMenuItem === 'mentoring'">
+          <a (click)="navigateTo('mentoring')">
+            <i class="pi pi-comments"></i>
+            <span *ngIf="!sidebarCollapsed">Mentoring</span>
+          </a>
+        </li>
+        <li [class.active]="activeMenuItem === 'settings'">
+          <a (click)="navigateTo('settings')">
+            <i class="pi pi-cog"></i>
+            <span *ngIf="!sidebarCollapsed">Settings</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <button class="logout-btn" (click)="logout()">
+          <i class="pi pi-sign-out"></i>
+          <span *ngIf="!sidebarCollapsed">Logout</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="dashboard-content">
+    <!-- Topbar -->
+    <div class="dashboard-topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" (click)="toggleSidebar()">
+          <i class="pi pi-bars"></i>
+        </button>
+        <h2 class="page-title">Dashboard</h2>
+      </div>
+      
+      <div class="topbar-right">
+        <div class="search-box">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input type="text" pInputText placeholder="Search..." [(ngModel)]="searchQuery" />
+          </span>
+        </div>
+        
+        <div class="notification-icon">
+          <button class="icon-btn" pButton icon="pi pi-bell" badge="3" badgeClass="p-badge-danger"></button>
+        </div>
+        
+        <div class="user-dropdown">
+          <p-avatar [image]="user?.photoUrl || 'assets/images/default-avatar.png'" shape="circle" size="normal"></p-avatar>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Dashboard Content -->
+    <div class="dashboard-main">
+      <!-- Quick Stats Section -->
+      <div class="stats-section">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="pi pi-calendar-plus"></i>
+          </div>
+          <div class="stat-content">
+            <h3>2</h3>
+            <p>Upcoming Sessions</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="pi pi-clock"></i>
+          </div>
+          <div class="stat-content">
+            <h3>12h</h3>
+            <p>Total Learning Hours</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="pi pi-book"></i>
+          </div>
+          <div class="stat-content">
+            <h3>3</h3>
+            <p>Active Courses</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="pi pi-check-circle"></i>
+          </div>
+          <div class="stat-content">
+            <h3>8</h3>
+            <p>Completed Sessions</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Actions Section -->
+      <div class="actions-section">
+        <h2 class="section-title">Quick Actions</h2>
+        
+        <div class="actions-grid">
+          <div class="action-card" (click)="findTutor()">
+            <div class="action-icon">
+              <i class="pi pi-search"></i>
+            </div>
+            <h3>Find a Tutor</h3>
+            <p>Search for tutors by subject or availability</p>
+            <button pButton icon="pi pi-arrow-right" label="Search Now"></button>
+          </div>
+          
+          <div class="action-card" (click)="bookSession()">
+            <div class="action-icon">
+              <i class="pi pi-calendar-plus"></i>
+            </div>
+            <h3>Book a Session</h3>
+            <p>Schedule a new learning session with your tutor</p>
+            <button pButton icon="pi pi-arrow-right" label="Book Now"></button>
+          </div>
+          
+          <div class="action-card" (click)="showMentoringDialog = true">
+            <div class="action-icon">
+              <i class="pi pi-comments"></i>
+            </div>
+            <h3>Request Mentoring</h3>
+            <p>Get long-term guidance from an expert tutor</p>
+            <button pButton icon="pi pi-arrow-right" label="Request Now"></button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Activity Section -->
+      <div class="activity-section">
+        <h2 class="section-title">Recent Activity</h2>
+        
+        <div class="activity-tabs">
+          <p-tabView [(activeIndex)]="activityTabIndex">
+            <p-tabPanel header="Upcoming Sessions">
+              <div class="upcoming-sessions">
+                <div class="session-card">
+                  <div class="session-date">
+                    <span class="date">23</span>
+                    <span class="month">May</span>
+                  </div>
+                  <div class="session-details">
+                    <h4>Mathematics - Calculus</h4>
+                    <p class="tutor">with Prof. John Doe</p>
+                    <p class="time"><i class="pi pi-clock"></i> 10:00 AM - 11:30 AM</p>
+                  </div>
+                  <div class="session-actions">
+                    <button pButton icon="pi pi-video" class="p-button-text"></button>
+                    <button pButton icon="pi pi-calendar-minus" class="p-button-text p-button-danger"></button>
+                  </div>
+                </div>
+                
+                <div class="session-card">
+                  <div class="session-date">
+                    <span class="date">25</span>
+                    <span class="month">May</span>
+                  </div>
+                  <div class="session-details">
+                    <h4>Physics - Mechanics</h4>
+                    <p class="tutor">with Dr. Jane Smith</p>
+                    <p class="time"><i class="pi pi-clock"></i> 2:00 PM - 3:30 PM</p>
+                  </div>
+                  <div class="session-actions">
+                    <button pButton icon="pi pi-video" class="p-button-text"></button>
+                    <button pButton icon="pi pi-calendar-minus" class="p-button-text p-button-danger"></button>
+                  </div>
+                </div>
+              </div>
+            </p-tabPanel>
+            
+            <p-tabPanel header="Bookings">
+              <app-bookings-table></app-bookings-table>
+            </p-tabPanel>
+            
+            <p-tabPanel header="Mentoring Requests">
+              <app-mentoring-requests-table></app-mentoring-requests-table>
+            </p-tabPanel>
+          </p-tabView>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mentoring Request Dialog -->
+<p-dialog [(visible)]="showMentoringDialog" 
+          [style]="{width: '550px'}"
+          [modal]="true" 
+          [draggable]="false" 
+          [resizable]="false"
+          styleClass="mentoring-dialog"
+          header="Request Mentoring">
+  <form [formGroup]="mentoringForm" (ngSubmit)="submitMentoringRequest()">
+    <div class="form-field">
+      <label for="tutor">Select Tutor</label>
+      <p-dropdown id="tutor" 
+                  [options]="tutorOptions" 
+                  formControlName="tuteurId"
+                  [filter]="true" 
+                  filterBy="name" 
+                  placeholder="Select a tutor"
+                  [showClear]="true">
+      </p-dropdown>
+      <small *ngIf="mentoringForm.get('tuteurId')?.invalid && mentoringForm.get('tuteurId')?.touched" class="validation-error">
+        Please select a tutor
+      </small>
+    </div>
+    
+    <div class="form-field">
+      <label for="module">Select Module</label>
+      <p-dropdown id="module" 
+                  [options]="moduleOptions" 
+                  formControlName="moduleId"
+                  [filter]="true" 
+                  filterBy="name" 
+                  placeholder="Select a module"
+                  [showClear]="true">
+      </p-dropdown>
+      <small *ngIf="mentoringForm.get('moduleId')?.invalid && mentoringForm.get('moduleId')?.touched" class="validation-error">
+        Please select a module
+      </small>
+    </div>
+    
+    <div class="form-field">
+      <label for="niveau">Skill Level</label>
+      <p-dropdown id="niveau" 
+                  [options]="niveauOptions" 
+                  formControlName="niveauId"
+                  placeholder="Select your skill level"
+                  [showClear]="true">
+      </p-dropdown>
+      <small *ngIf="mentoringForm.get('niveauId')?.invalid && mentoringForm.get('niveauId')?.touched" class="validation-error">
+        Please select your skill level
+      </small>
+    </div>
+    
+    <div class="form-field">
+      <label for="message">Message to Tutor</label>
+      <textarea id="message" pInputTextarea formControlName="message" rows="5" placeholder="Describe what you want to learn"></textarea>
+      <small *ngIf="mentoringForm.get('message')?.invalid && mentoringForm.get('message')?.touched" class="validation-error">
+        Please enter a message (50-500 characters)
+      </small>
+    </div>
+    
+    <div class="form-actions">
+      <button pButton type="submit" label="Send Request" [disabled]="mentoringForm.invalid || isSubmitting">
+        <i *ngIf="isSubmitting" class="pi pi-spinner pi-spin"></i>
+        <span *ngIf="!isSubmitting">Send Request</span>
+      </button>
+      <button pButton type="button" label="Cancel" class="p-button-text" (click)="showMentoringDialog = false"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Toast and Confirmation Dialog -->
+<p-toast position="top-right"></p-toast>
+<p-confirmDialog [style]="{width: '450px'}" header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

@@ -1,0 +1,294 @@
+/* Featured Courses Section */
+.featured-courses-section {
+  margin-bottom: 3rem;
+}
+
+/* Section Header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+  position: relative;
+  margin: 0;
+}
+
+.section-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 50px;
+  height: 4px;
+  background-color: #ff4081;
+  border-radius: 2px;
+}
+
+/* Override PrimeNG DataView styles */
+:host ::ng-deep .p-dataview .p-dataview-header {
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem 0;
+}
+
+:host ::ng-deep .p-dataview .p-dataview-content {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.layout-options {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* DataView Layout Toggle Buttons */
+:host ::ng-deep .p-selectbutton {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .p-selectbutton .p-button {
+  background-color: #f5f7fa;
+  border-color: #e0e0e0;
+  color: #666;
+}
+
+:host ::ng-deep .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover {
+  background-color: #eeeeee;
+  border-color: #e0e0e0;
+  color: #333;
+}
+
+:host ::ng-deep .p-selectbutton .p-button.p-highlight {
+  background-color: #3f51b5;
+  border-color: #3f51b5;
+  color: white;
+}
+
+/* Course Card - Grid View */
+.course-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.course-image {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.price-tag {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: #3f51b5;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.featured-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: #ff4081;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.course-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.course-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.2rem;
+  color: #333;
+  line-height: 1.4;
+}
+
+.course-description {
+  color: #666;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  font-size: 0.9rem;
+  flex-grow: 1;
+}
+
+.course-meta {
+  margin-bottom: 1.5rem;
+}
+
+.tutor-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.tutor-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  object-fit: cover;
+}
+
+.course-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.stat i {
+  margin-right: 0.4rem;
+  color: #3f51b5;
+}
+
+.course-actions {
+  text-align: center;
+}
+
+:host ::ng-deep .course-actions .p-button-outlined {
+  border-color: #3f51b5;
+  color: #3f51b5;
+}
+
+:host ::ng-deep .course-actions .p-button-outlined:hover {
+  background-color: #3f51b5;
+  color: white;
+}
+
+/* Course Card - List View */
+.course-card-list {
+  display: flex;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-card-list:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.course-image-list {
+  width: 250px;
+  min-width: 250px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.course-content-list {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-content-list .course-title {
+  font-size: 1.4rem;
+}
+
+.course-content-list .course-description {
+  margin-bottom: 1.5rem;
+}
+
+.course-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.course-details .tutor-info {
+  margin-bottom: 0;
+}
+
+.course-details .course-stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Empty Message */
+.empty-message {
+  text-align: center;
+  padding: 2rem 0;
+  color: #666;
+}
+
+.empty-message i {
+  font-size: 2rem;
+  color: #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .course-card-list {
+    flex-direction: column;
+  }
+  
+  .course-image-list {
+    width: 100%;
+    height: 180px;
+  }
+  
+  .course-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .course-details .course-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .course-details .course-actions {
+    width: 100%;
+    margin-top: 1rem;
+  }
+}

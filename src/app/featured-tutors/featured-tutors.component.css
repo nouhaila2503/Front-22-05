@@ -1,0 +1,385 @@
+/* Featured Tutors Section */
+/* featured-tutors.component.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.featured-tutors-section{    
+  font-family: 'Segoe UI', sans-serif;
+}
+/* Rest of CSS */
+.featured-tutors-section {
+  margin-bottom: 4rem;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+
+}
+
+/* Section Header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.section-header h2 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #333;
+  position: relative;
+  margin: 0;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+.section-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -0.6rem;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background-color: #ff4081;
+  border-radius: 4px;
+}
+
+/* Section View All Button */
+:host ::ng-deep .section-header .p-button.p-button-text {
+  color: #ffffff;
+  background-color: #3f51b5;
+  padding: 0.9rem;
+  border-radius: 20px;
+  font-weight: 500;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+:host ::ng-deep .section-header .p-button.p-button-text:hover {
+  background-color: rgba(63, 81, 181, 0.08);
+  color: #314ce8;
+}
+
+:host ::ng-deep .section-header .p-button.p-button-text .p-button-icon {
+  font-size: 0.9rem;
+  transition: transform 0.2s ease;
+}
+
+:host ::ng-deep .section-header .p-button.p-button-text:hover .p-button-icon {
+  transform: translateX(3px);
+}
+
+/* Carousel Container */
+.tutors-carousel-container {
+  padding: 1rem 0;
+}
+
+/* Override PrimeNG carousel styles */
+:host ::ng-deep .p-carousel {
+  padding-bottom: 2.5rem;
+}
+
+:host ::ng-deep .p-carousel .p-carousel-content .p-carousel-prev,
+:host ::ng-deep .p-carousel .p-carousel-content .p-carousel-next {
+  color: #3f51b5;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin: 0 -10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+:host ::ng-deep .p-carousel .p-carousel-content .p-carousel-prev:hover,
+:host ::ng-deep .p-carousel .p-carousel-content .p-carousel-next:hover {
+  color: #ff4081;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+}
+
+:host ::ng-deep .p-carousel .p-carousel-indicators {
+  bottom: 0;
+  margin-top: 1rem;
+}
+
+:host ::ng-deep .p-carousel .p-carousel-indicators .p-carousel-indicator button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  transition: all 0.2s ease;
+  margin: 0 4px;
+}
+
+:host ::ng-deep .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
+  background-color: #ff4081;
+  transform: scale(1.2);
+}
+
+/* Tutor Card */
+.tutor-card {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 1.75rem;
+  height: 100%;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tutor-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Card Header with Avatar and Info */
+.card-header {
+  display: flex;
+  margin-bottom: 1.25rem;
+}
+
+/* Avatar with Rating Badge */
+.tutor-avatar {
+  position: relative;
+  margin-right: 1.25rem;
+}
+
+.tutor-avatar img {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3f51b5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rating-badge {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background-color: #ff4081;
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 6px rgba(255, 64, 129, 0.4);
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+/* Tutor Info */
+.tutor-info {
+  flex: 1;
+}
+
+.tutor-info h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.3rem;
+  color: #333;
+  font-weight: 600;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+.specialization {
+  color: #666;
+  margin: 0 0 0.6rem 0;
+  font-size: 0.95rem;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+/* Rating Stars */
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.star-icon {
+  color: #ffc107;
+  font-size: 1rem;
+  margin-right: 3px;
+}
+
+.star-icon.empty {
+  color: #e0e0e0;
+}
+
+.star-icon.half-star {
+  position: relative;
+  color: #e0e0e0;
+}
+
+.star-icon.half-star::before {
+  content: "\e931"; /* PrimeNG star-fill icon */
+  position: absolute;
+  color: #ffc107;
+  width: 50%;
+  overflow: hidden;
+}
+
+.review-count {
+  margin-left: 6px;
+  color: #777;
+  font-size: 0.85rem;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+/* Subjects/Modules */
+.tutor-subjects {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  min-height: 42px;
+  gap: 6px;
+}
+
+:host ::ng-deep .tutor-subjects .p-chip {
+  background-color: #f5f7fa;
+  color: #3f51b5;
+  font-size: 0.85rem;
+  border-radius: 20px;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+  padding: 0.25rem 0.75rem;
+  transition: all 0.2s ease;
+}
+
+:host ::ng-deep .tutor-subjects .p-chip:hover {
+  background-color: #e8eaf6;
+  transform: translateY(-2px);
+}
+
+.more-modules {
+  font-size: 0.85rem;
+  color: #777;
+  align-self: center;
+  margin-left: 4px;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+/* Price */
+.tutor-price {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.price-label {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 0.25rem;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+.price-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #3f51b5;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+  line-height: 1.2;
+}
+
+.price-period {
+  font-size: 0.85rem;
+  color: #777;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+/* Action Buttons */
+.tutor-actions {
+  margin-top: auto;
+  text-align: center;
+}
+
+:host ::ng-deep .tutor-actions .p-button {
+  color: #ffffff;
+  background-color: #4f64db;
+  padding: 0.9rem;
+  border-radius: 20px;
+  font-weight: 500;
+  font-family: 'Poppins', 'Roboto', sans-serif;
+}
+
+:host ::ng-deep .tutor-actions .p-button-outlined {
+  border-color: #022cff;
+  color: #ffffff;
+  border-width: 2px;
+  transition: all 0.3s ease;
+}
+
+:host ::ng-deep .tutor-actions .p-button-outlined:hover {
+  background-color: #3f51b5;
+  color: white;
+  box-shadow: 0 4px 12px rgba(63, 81, 181, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 1199px) {
+  :host ::ng-deep .p-carousel .p-carousel-items-content {
+    overflow: visible;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .tutor-card {
+    min-height: 320px;
+    padding: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .section-header h2 {
+    font-size: 1.75rem;
+  }
+  
+  .tutor-card {
+    padding: 1.25rem;
+  }
+  
+  .tutor-avatar img {
+    width: 65px;
+    height: 65px;
+  }
+  
+  .tutor-info h3 {
+    font-size: 1.2rem;
+  }
+  
+  .rating-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+  
+  .price-value {
+    font-size: 1.4rem;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .card-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .tutor-avatar {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .tutor-subjects {
+    justify-content: center;
+  }
+
+  .tutor-price {
+    align-items: center;
+  }
+}
+
+/* Font import for the custom fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');

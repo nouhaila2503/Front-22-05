@@ -1,0 +1,81 @@
+<!-- Loading State -->
+<div *ngIf="loading">
+  <p-skeleton height="40px" styleClass="mb-2"></p-skeleton>
+  <p-skeleton height="40px" styleClass="mb-2"></p-skeleton>
+  <p-skeleton height="40px" styleClass="mb-2"></p-skeleton>
+</div>
+
+<!-- Data Table -->
+<p-table [value]="mentoringRequests" [paginator]="true" [rows]="5" 
+        styleClass="p-datatable-sm p-datatable-striped"
+        [showCurrentPageReport]="true" responsiveLayout="stack"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} requests"
+        [globalFilterFields]="['tuteur.username', 'module.name', 'status', 'createdAt']"
+        *ngIf="!loading && mentoringRequests.length > 0">
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="tuteur.username">Tutor <p-sortIcon field="tuteur.username"></p-sortIcon></th>
+      <th pSortableColumn="module.name">Module <p-sortIcon field="module.name"></p-sortIcon></th>
+        <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+      <th pSortableColumn="createdAt">Created <p-sortIcon field="createdAt"></p-sortIcon></th>
+      <th>Actions</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-request>
+    <tr>
+      <td>
+        <span class="p-column-title">Tutor</span>
+        <div class="tutor-cell">
+          <p-avatar [image]="request.tuteur.photoUrl || 'assets/images/default-avatar.png'" 
+                   shape="circle" size="normal">
+          </p-avatar>
+          <span class="ml-2">{{ request.tuteur.username }}</span>
+        </div>
+      </td>
+      <td>
+        <span class="p-column-title">Module</span>
+        {{ request.module.name }}
+      </td>
+      <td>
+        <span class="p-column-title">Status</span>
+        <p-tag [value]="request.status" [severity]="getStatusSeverity(request.status)"></p-tag>
+      </td>
+      <td>
+        <span class="p-column-title">Created</span>
+        {{ request.createdAt | date:'medium' }}
+      </td>
+      <td>
+        <span class="p-column-title">Actions</span>
+        <div class="action-buttons">
+          <button pButton icon="pi pi-eye" class="p-button-rounded p-button-text p-button-sm"
+                  pTooltip="View Details" (click)="viewDetails(request.id)">
+          </button>
+          <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                  pTooltip="Cancel Request" (click)="confirmCancel(request)"
+                  *ngIf="request.status === 'Pending'">
+          </button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="5">
+        <div class="empty-state">
+          <i class="pi pi-comments empty-icon"></i>
+          <h4>No Mentoring Requests</h4>
+          <p>You haven't sent any mentoring requests yet.</p>
+          <button pButton label="Create Request" icon="pi pi-plus" (click)="createMentoringRequest()"></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<!-- Empty State -->
+<div class="empty-state" *ngIf="!loading && mentoringRequests.length === 0">
+  <i class="pi pi-comments empty-icon"></i>
+  <h4>No Mentoring Requests</h4>
+  <p>You haven't sent any mentoring requests yet.</p>
+  <button pButton label="Create Request" icon="pi pi-plus" (click)="createMentoringRequest()"></button>
+</div>

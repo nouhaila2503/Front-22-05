@@ -1,0 +1,105 @@
+.sidebar {
+  background: linear-gradient(135deg, #2A3990 0%, #3F5EFB 100%);
+  color: white;
+  height: 100%;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 20px rgba(63, 94, 251, 0.2);
+  overflow-y: auto;
+}
+
+.sidebar.collapsed :host ::ng-deep .p-menu .p-menuitem-text,
+.sidebar.collapsed :host ::ng-deep .p-menu .p-menuitem-icon + .p-menuitem-text,
+.sidebar.collapsed :host ::ng-deep .p-menu .p-submenu-icon {
+  display: none;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo {
+  height: 40px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .logo {
+  height: 30px;
+}
+
+.toggle-btn {
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-info {
+  margin-left: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.user-info h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+}
+
+:host ::ng-deep .sidebar-menu {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+:host ::ng-deep .sidebar-menu .p-menuitem-link {
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+}
+
+:host ::ng-deep .sidebar-menu .p-menuitem-link .p-menuitem-icon {
+  color: white;
+  margin-right: 0.75rem;
+}
+
+:host ::ng-deep .sidebar-menu .p-menuitem-link .p-menuitem-text {
+  color: white;
+}
+
+:host ::ng-deep .sidebar-menu .p-menuitem-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:host ::ng-deep .sidebar-menu .p-menuitem-link.active-route {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+:host ::ng-deep .sidebar-menu .p-menuitem-link.active-route::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(to bottom, #8a65ff, #6979F8);
+  border-radius: 0 4px 4px 0;
+}

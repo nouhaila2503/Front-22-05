@@ -1,0 +1,57 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.mobile-menu-btn {
+  display: none;
+  font-size: 1.3rem;
+  color: #2A3990;
+}
+
+.search-container {
+  flex: 1;
+  max-width: 500px;
+  margin: 0 1rem;
+}
+
+.search-container input {
+  width: 100%;
+  background-color: #f9f9ff;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .transparent-menubar.p-menubar {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+:host ::ng-deep .transparent-menubar.p-menubar .p-menubar-button {
+  color: #2A3990;
+}
+
+:host ::ng-deep .transparent-menubar.p-menubar .p-menuitem-link {
+  padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .search-container {
+    display: none;
+  }
+}

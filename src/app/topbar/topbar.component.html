@@ -1,0 +1,19 @@
+<div class="topbar">
+  <button pButton icon="pi pi-bars" 
+          class="p-button-rounded p-button-text p-button-lg mobile-menu-btn" 
+          (click)="onToggleSidebar()">
+  </button>
+  
+  <span class="p-input-icon-left p-input-icon-right search-container">
+    <i class="pi pi-search"></i>
+    <input type="text" pInputText placeholder="Search tutors, modules..." 
+          [(ngModel)]="searchQuery" 
+          (keyup.enter)="search()"
+          class="p-inputtext-lg" />
+    <i class="pi pi-times" *ngIf="searchQuery" (click)="searchQuery = ''; search()"></i>
+  </span>
+  
+  <div class="topbar-actions">
+    <p-menubar [model]="menuItems" styleClass="transparent-menubar"></p-menubar>
+  </div>
+</div>

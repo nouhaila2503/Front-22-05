@@ -1,0 +1,38 @@
+<div class="sidebar" [ngClass]="{'collapsed': collapsed}">
+  <div class="sidebar-header">
+    <img src="assets/images/logo.png" alt="TutorLink Logo" class="logo">
+    <button pButton icon="pi pi-angle-left" class="p-button-rounded p-button-text toggle-btn" 
+            (click)="toggleSidebar()" 
+            [ngClass]="{'pi-angle-left': !collapsed, 'pi-angle-right': collapsed}">
+    </button>
+  </div>
+  
+  <div class="user-profile">
+    <p-skeleton *ngIf="loading" shape="circle" size="large" [style]="{'width': '50px', 'height': '50px'}"></p-skeleton>
+<p-avatar *ngIf="!loading" 
+          [image]="user?.photoUrl || 'assets/images/default-avatar.png'"
+          size="large"
+          shape="circle">
+</p-avatar>
+
+
+
+    <div class="user-info" *ngIf="!collapsed">
+      <p-skeleton *ngIf="loading" width="80%" height="1.5rem"></p-skeleton>
+      <h3 *ngIf="!loading">{{ user?.username }}</h3>
+      <p-skeleton *ngIf="loading" width="60%" height="1rem"></p-skeleton>
+      <p-tag *ngIf="!loading" value="Apprenant" severity="info" [rounded]="true"></p-tag>
+    </div>
+  </div>
+  
+  <p-menu [model]="menuItems" styleClass="sidebar-menu" [style]="{'width': '100%', 'border': 'none'}"></p-menu>
+  
+  <div class="sidebar-footer">
+    <button pButton icon="pi pi-sign-out" 
+            [label]="collapsed ? '' : 'Logout'" 
+            (click)="logout()" 
+            class="p-button-danger p-button-sm" 
+            [style]="{'width': '100%'}">
+    </button>
+  </div>
+</div>

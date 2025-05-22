@@ -1,0 +1,152 @@
+/* Home CTA Section */
+.home-cta-section {
+  position: relative;
+  background: linear-gradient(135deg, #00bcd4, #3f51b5);
+  padding: 4rem 2rem;
+  border-radius: 15px;
+  overflow: hidden;
+  color: white;
+  text-align: center;
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation Blob */
+.animation-blob {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: blob-float 10s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+@keyframes blob-float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-50px, 20px) scale(1.05);
+  }
+  100% {
+    transform: translate(50px, -20px) scale(0.95);
+  }
+}
+
+/* CTA Content */
+.cta-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cta-content p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* CTA Buttons */
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+:host ::ng-deep .p-button.p-button-lg {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+:host ::ng-deep .p-button.p-button-lg .p-button-icon {
+  font-size: 1.2rem;
+}
+
+:host ::ng-deep .p-button {
+  background-color: #ff4081;
+  border-color: #ff4081;
+}
+
+:host ::ng-deep .p-button:enabled:hover {
+  background-color: #f50057;
+  border-color: #f50057;
+}
+
+:host ::ng-deep .p-button.p-button-outlined {
+  background-color: transparent;
+  color: white;
+  border-color: white;
+}
+
+:host ::ng-deep .p-button.p-button-outlined:enabled:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: white;
+}
+
+/* Before/After Decorations */
+.home-cta-section::before {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: -50px;
+  width: 200px;
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.home-cta-section::after {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: 50px;
+  width: 100px;
+  height: 100px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .home-cta-section {
+    padding: 3rem 1rem;
+  }
+  
+  .cta-content h2 {
+    font-size: 1.8rem;
+  }
+  
+  .cta-content p {
+    font-size: 1rem;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .animation-blob {
+    width: 300px;
+    height: 300px;
+  }
+}

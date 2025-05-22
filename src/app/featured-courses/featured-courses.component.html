@@ -1,0 +1,122 @@
+<section class="featured-courses-section">
+  <div class="section-header">
+    <h2>Featured Courses</h2>
+    <p-button 
+      label="Browse All" 
+      icon="pi pi-arrow-right" 
+      iconPos="right" 
+      styleClass="p-button-text p-button-rounded" 
+      [routerLink]="['/courses']">
+    </p-button>
+  </div>
+  
+  <div class="courses-container">
+    <p-dataView 
+      [value]="courses" 
+      [layout]="layout" 
+      styleClass="p-dataview-sm"
+      [paginator]="false">
+      
+      <ng-template pTemplate="header">
+        <div class="layout-options">
+          <p-selectButton 
+            [options]="[{icon: 'pi pi-th-large', value: 'grid'}, {icon: 'pi pi-bars', value: 'list'}]" 
+            [(ngModel)]="layout" 
+            optionLabel="icon" 
+            optionValue="value">
+          </p-selectButton>
+        </div>
+      </ng-template>
+      
+      <!-- Grid View -->
+      <ng-template let-course pTemplate="gridItem">
+        <div class="course-card">
+          <div class="course-image" [style.backgroundImage]="'url(' + (course.imageUrl || 'assets/images/default-course.jpg') + ')'">
+            <div class="price-tag">{{course.price}} MAD</div>
+            <div *ngIf="course.isFeatured" class="featured-badge">Featured</div>
+          </div>
+          
+          <div class="course-content">
+            <h3 class="course-title">{{course.title}}</h3>
+            <p class="course-description">{{truncateDescription(course.description)}}</p>
+            
+            <div class="course-meta">
+              <div class="tutor-info">
+                <img [src]="course.tutor?.photoUrl || 'assets/images/default-avatar.png'" [alt]="course.tutor?.firstName" class="tutor-avatar">
+                <span>{{course.tutor?.firstName}} {{course.tutor?.lastName}}</span>
+              </div>
+              
+              <div class="course-stats">
+                <div class="stat">
+                  <i class="pi pi-clock"></i>
+                  <span>{{course.durationHours}} hours</span>
+                </div>
+                <div class="stat">
+                  <i class="pi pi-users"></i>
+                  <span>{{course.enrollmentCount}} enrolled</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="course-actions">
+              <p-button 
+                label="View Details" 
+                styleClass="p-button-outlined p-button-rounded" 
+                (onClick)="navigateToCourseDetails(course.id)">
+              </p-button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      
+      <!-- List View -->
+      <ng-template let-course pTemplate="listItem">
+        <div class="course-card-list">
+          <div class="course-image-list" [style.backgroundImage]="'url(' + (course.imageUrl || 'assets/images/default-course.jpg') + ')'">
+            <div class="price-tag">{{course.price}} MAD</div>
+            <div *ngIf="course.isFeatured" class="featured-badge">Featured</div>
+          </div>
+          
+          <div class="course-content-list">
+            <h3 class="course-title">{{course.title}}</h3>
+            <p class="course-description">{{truncateDescription(course.description, 200)}}</p>
+            
+            <div class="course-details">
+              <div class="tutor-info">
+                <img [src]="course.tutor?.photoUrl || 'assets/images/default-avatar.png'" [alt]="course.tutor?.firstName" class="tutor-avatar">
+                <span>{{course.tutor?.firstName}} {{course.tutor?.lastName}}</span>
+              </div>
+              
+              <div class="course-stats">
+                <div class="stat">
+                  <i class="pi pi-clock"></i>
+                  <span>{{course.durationHours}} hours</span>
+                </div>
+                <div class="stat">
+                  <i class="pi pi-users"></i>
+                  <span>{{course.enrollmentCount}} enrolled</span>
+                </div>
+              </div>
+              
+              <div class="course-actions">
+                <p-button 
+                  label="View Details" 
+                  styleClass="p-button-outlined p-button-rounded" 
+                  (onClick)="navigateToCourseDetails(course.id)">
+                </p-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      
+      <ng-template pTemplate="empty">
+        <div class="empty-message">
+          <i class="pi pi-info-circle"></i>
+          <p>No courses available at the moment.</p>
+        </div>
+      </ng-template>
+      
+    </p-dataView>
+  </div>
+</section>

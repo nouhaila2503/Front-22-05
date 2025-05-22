@@ -1,0 +1,33 @@
+<section class="home-cta-section">
+  <div class="cta-content">
+    <h2>Ready to Start Your Learning Journey?</h2>
+    <p>Join thousands of students and tutors on TutorLink today</p>
+    
+    <div class="cta-buttons">
+      <p-button 
+        label="Find a Tutor" 
+        icon="pi pi-search" 
+        styleClass="p-button-rounded p-button-lg"
+        (onClick)="navigateToSearch()">
+      </p-button>
+      
+      <p-button 
+        *ngIf="!isLoggedIn"
+        label="Become a Tutor" 
+        icon="pi pi-user-plus" 
+        styleClass="p-button-rounded p-button-outlined p-button-lg"
+        (onClick)="navigateToRegister('tutor')">
+      </p-button>
+      
+      <p-button 
+        *ngIf="isLoggedIn && userRole === 'APPRENANT'"
+        label="My Dashboard" 
+        icon="pi pi-user" 
+        styleClass="p-button-rounded p-button-outlined p-button-lg"
+        [routerLink]="['/dashboard']">
+      </p-button>
+    </div>
+  </div>
+  
+  <div class="animation-blob"></div>
+</section>
